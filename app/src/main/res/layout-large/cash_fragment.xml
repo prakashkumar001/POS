@@ -1,0 +1,366 @@
+<LinearLayout
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:textSize="20dp"
+            android:gravity="center"
+            android:text="Total : "
+            />
+
+        <TextView
+            android:id="@+id/total"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:textSize="20dp"
+            android:gravity="center"
+            android:text="20"
+            />
+
+    </LinearLayout>
+
+<RelativeLayout android:id="@+id/relativeLayout3"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_alignParentLeft="true"
+    android:background="@android:color/white"
+    >
+
+        <RelativeLayout
+            android:id="@+id/relativeLayout2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="30dp"
+            android:padding="8dp" >
+
+            <Button
+                android:id="@+id/hundredDollar"
+                android:layout_width="130dp"
+                android:layout_height="90dp"
+                android:background="@drawable/hundereddollar" />
+
+            <Button
+                android:id="@+id/fiftyDollar"
+                android:layout_width="130dp"
+                android:layout_height="90dp"
+                android:layout_alignBottom="@+id/hundredDollar"
+                android:layout_alignTop="@+id/hundredDollar"
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@+id/hundredDollar"
+                android:background="@drawable/fiftydollar" />
+
+            <Button
+                android:id="@+id/twentyDollar"
+                android:layout_width="130dp"
+                android:layout_height="90dp"
+                android:layout_alignTop="@+id/fiftyDollar"
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@+id/fiftyDollar"
+                android:background="@drawable/twentydollar" />
+
+            <Button
+                android:id="@+id/tenDollar"
+                android:layout_width="130dp"
+                android:layout_height="90dp"
+                android:layout_below="@+id/hundredDollar"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/tendollar" />
+
+            <Button
+                android:id="@+id/fiveDollar"
+                android:layout_width="130dp"
+                android:layout_height="90dp"
+                android:layout_alignLeft="@+id/fiftyDollar"
+                android:layout_alignTop="@+id/tenDollar"
+                android:background="@drawable/fivedollar" />
+
+            <Button
+                android:id="@+id/twoDollar"
+                android:layout_width="130dp"
+                android:layout_height="90dp"
+                android:layout_alignLeft="@+id/twentyDollar"
+                android:layout_alignTop="@+id/fiveDollar"
+                android:background="@drawable/twodollar" />
+
+            <Button
+                android:id="@+id/oneDollar"
+                android:layout_width="130dp"
+                android:layout_height="90dp"
+                android:layout_alignLeft="@+id/fiveDollar"
+                android:layout_below="@+id/fiveDollar"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/onedollar" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/relativeLayout4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="10dp"
+            android:padding="8dp" >
+
+            <Button
+                android:id="@+id/clearBtn"
+                android:layout_width="183dp"
+                android:layout_height="60dp"
+                android:text="CE"
+                android:background="@android:color/black"
+                android:textColor="@android:color/white"
+                android:textSize="30dp" />
+
+            <RelativeLayout
+                android:id="@+id/minusBtn"
+                android:layout_width="90dp"
+                android:layout_height="60dp"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="3dp"
+                android:layout_toRightOf="@+id/clearBtn"
+                android:background="@android:color/black"
+                android:textColor="@android:color/white"
+                android:textSize="30dp" >
+
+                <Button
+                    android:id="@+id/backSpace"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/bs2"
+                    android:text="bck"
+                    android:textSize="1dp" />
+
+            </RelativeLayout>
+
+            <Button
+                android:id="@+id/seven"
+                android:layout_width="90dp"
+                android:layout_height="60dp"
+                android:layout_below="@+id/clearBtn"
+                android:layout_marginTop="3dp"
+                android:text="7"
+                android:background="@android:color/black"
+                android:textColor="@android:color/white"                android:textSize="30dp" />
+
+            <Button
+                android:id="@+id/eight"
+                android:layout_width="90dp"
+                android:layout_height="60dp"
+                android:layout_below="@+id/clearBtn"
+                android:layout_marginLeft="3dp"
+                android:layout_marginTop="3dp"
+                android:layout_toRightOf="@+id/seven"
+                android:text="8"
+                android:background="@android:color/black"
+                android:textColor="@android:color/white"                android:textSize="30dp" />
+
+            <Button
+                android:id="@+id/four"
+                android:layout_width="90dp"
+                android:layout_height="60dp"
+                android:layout_below="@+id/seven"
+                android:layout_marginTop="3dp"
+                android:text="4"
+                android:background="@android:color/black"
+                android:textColor="@android:color/white"
+                android:textSize="30dp" />
+
+            <Button
+                android:id="@+id/five"
+                android:layout_width="90dp"
+                android:layout_height="60dp"
+                android:layout_alignLeft="@+id/eight"
+                android:layout_below="@+id/eight"
+                android:layout_marginTop="3dp"
+                android:background="@android:color/black"
+                android:textColor="@android:color/white"
+                android:text="5"
+                android:textSize="30dp" />
+
+            <Button
+                android:id="@+id/nine"
+                android:layout_width="90dp"
+                android:layout_height="60dp"
+                android:layout_alignRight="@+id/minusBtn"
+                android:layout_below="@+id/minusBtn"
+                android:layout_marginTop="3dp"
+                android:text="9"
+                android:background="@android:color/black"
+                android:textColor="@android:color/white"
+                android:textSize="30dp" />
+
+            <Button
+                android:id="@+id/six"
+                android:layout_width="90dp"
+                android:layout_height="60dp"
+                android:layout_alignLeft="@+id/nine"
+                android:layout_alignTop="@+id/five"
+                android:text="6"
+                android:background="@android:color/black"
+                android:textColor="@android:color/white"
+                android:textSize="30dp" />
+
+            <Button
+                android:id="@+id/one"
+                android:layout_width="90dp"
+                android:layout_height="60dp"
+                android:layout_below="@+id/four"
+                android:layout_marginTop="3dp"
+                android:text="1"
+                android:background="@android:color/black"
+                android:textColor="@android:color/white"
+                android:textSize="30dp" />
+
+            <Button
+                android:id="@+id/two"
+                android:layout_width="90dp"
+                android:layout_height="60dp"
+                android:layout_alignLeft="@+id/five"
+                android:layout_below="@+id/five"
+                android:layout_marginTop="3dp"
+                android:text="2"
+                android:background="@android:color/black"
+                android:textColor="@android:color/white"
+                android:textSize="30dp" />
+
+            <Button
+                android:id="@+id/three"
+                android:layout_width="90dp"
+                android:layout_height="60dp"
+                android:layout_alignLeft="@+id/six"
+                android:layout_alignTop="@+id/two"
+                android:text="3"
+                android:background="@android:color/black"
+                android:textColor="@android:color/white"
+                android:textSize="30dp" />
+
+            <Button
+                android:id="@+id/zero"
+                android:layout_width="183dp"
+                android:layout_height="60dp"
+                android:layout_below="@+id/one"
+                android:layout_marginTop="3dp"
+                android:background="@android:color/black"
+                android:textColor="@android:color/white"                android:text="0"
+                android:textSize="30dp" />
+
+            <Button
+                android:id="@+id/dot"
+                android:layout_width="90dp"
+                android:layout_height="60dp"
+                android:layout_alignLeft="@+id/three"
+                android:layout_below="@+id/three"
+                android:layout_marginTop="3dp"
+                android:text="."
+                android:background="@android:color/black"
+                android:textColor="@android:color/white"                android:textSize="30dp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="110dp"
+            android:layout_alignParentBottom="true" >
+
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:text="GIVEN"
+                android:textColor="@android:color/black"
+                android:textSize="22dp" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/textView1"
+                android:layout_marginLeft="40dp"
+                android:layout_toRightOf="@+id/givenAmt"
+                android:text="CHANGE"
+                android:textColor="@android:color/black"
+                android:textSize="22dp" />
+
+            <TextView
+                android:id="@+id/changeAmt"
+                android:layout_width="200dp"
+                android:layout_height="60dp"
+                android:layout_alignLeft="@+id/textView2"
+                android:layout_alignStart="@+id/textView2"
+                android:layout_alignTop="@+id/givenAmt"
+                android:background="@drawable/white_edittext_bg"
+                android:gravity="right|center_vertical"
+                android:padding="5dp"
+                android:textSize="22dp">
+            </TextView>
+
+            <TextView
+                android:id="@+id/givenAmt"
+                android:layout_width="200dp"
+                android:layout_height="60dp"
+                android:layout_alignLeft="@+id/textView1"
+                android:layout_alignParentBottom="true"
+                android:layout_alignStart="@+id/textView1"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/white_edittext_bg"
+                android:gravity="right|center_vertical"
+                android:padding="5dp"
+                android:textSize="22dp" />
+
+            <Button
+                android:id="@+id/btnPayAmountDue"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignBottom="@+id/btnPayPartial"
+                android:layout_alignTop="@+id/btnPayPartial"
+                android:layout_marginLeft="41dp"
+                android:layout_marginStart="41dp"
+                android:layout_toEndOf="@+id/btnPayPartial"
+                android:layout_toRightOf="@+id/btnPayPartial"
+                android:background="@android:color/holo_green_dark"
+                android:onClick="submitAmt"
+                android:padding="8dp"
+                android:text="PAY AMOUNT DUE"
+                android:textColor="@android:color/white"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/btnPayPartial"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignBottom="@+id/changeAmt"
+                android:layout_alignTop="@+id/changeAmt"
+                android:visibility="invisible"
+                android:layout_marginLeft="55dp"
+                android:layout_marginStart="55dp"
+                android:layout_toEndOf="@+id/changeAmt"
+                android:layout_toRightOf="@+id/changeAmt"
+                android:background="@android:color/holo_orange_light"
+                android:onClick="submitAmt"
+                android:padding="8dp"
+                android:text="PAY PARTIAL"
+                android:textColor="@android:color/white"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+
+        </RelativeLayout>
+    </RelativeLayout>
+</LinearLayout>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+    <TextView
+
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:text="Header"
+        android:gravity="center"
+        android:textSize="16dp"
+        android:visibility="gone"
+        android:textColor="@android:color/white"
+        android:background="@color/tab_background_selected"
+        android:layout_height="50dp" />
+
+
+    </FrameLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </android.support.v7.widget.RecyclerView>
+
+    <TextView
+        android:id="@+id/totals"
+        android:layout_width="match_parent"
+        android:gravity="center"
+        android:text=""
+        android:layout_height="50dp" />
+
+
+   <LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="50dp"></LinearLayout>
+
+</LinearLayout>

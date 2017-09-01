@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_marginRight="10dp"
+    android:layout_height="wrap_content">
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp">
+        <!-- Swipe Layout-->
+
+        <LinearLayout
+            android:id="@+id/laybg"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:gravity="center"
+            android:weightSum="4"
+            android:orientation="horizontal"
+            >
+
+            <TextView
+                android:id="@+id/tablenumber"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:text="Customer Name"
+                android:layout_marginLeft="10dp"
+                android:gravity="center"
+                android:layout_height="wrap_content" />
+
+
+            <TextView
+                android:id="@+id/type"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+
+                android:text="DINE-IN"
+                android:layout_height="wrap_content" />
+
+
+
+            <TextView
+                android:id="@+id/progress"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:text="KITCHEN"
+                android:gravity="center"
+
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/status"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:text="UN PAID"
+                android:gravity="center"
+
+                android:layout_height="wrap_content" />
+
+
+        </LinearLayout>
+    </FrameLayout>
+</LinearLayout>
