@@ -35,9 +35,9 @@
                     android:layout_height="wrap_content" />
 
                 <Button
-                    android:id="@+id/cancel"
+                    android:id="@+id/clockout"
                     android:layout_width="wrap_content"
-                    android:text="Cancel"
+                    android:text="Clock Out"
                     android:layout_height="wrap_content" />
 
             </LinearLayout>

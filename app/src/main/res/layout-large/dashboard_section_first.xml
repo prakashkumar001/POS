@@ -99,6 +99,13 @@
                         android:src="@mipmap/order_info_icon"
                         />-->
                     <Button
+                        android:id="@+id/clear"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Clear"
+                        android:layout_gravity="center|right"
+                        />
+                    <Button
                         android:id="@+id/order_detail"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

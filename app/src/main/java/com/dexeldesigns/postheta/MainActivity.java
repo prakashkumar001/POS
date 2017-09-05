@@ -319,7 +319,7 @@ public class MainActivity extends AppCompatActivity {
     public void logout()
     {
         Toast.makeText(getApplicationContext(),"Payment success",Toast.LENGTH_SHORT).show();
-        Intent i=new Intent(this, PasswordPage.class);
+        Intent i=new Intent(this, Login.class);
         startActivity(i);
         finish();
     }

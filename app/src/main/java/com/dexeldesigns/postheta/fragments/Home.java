@@ -26,7 +26,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.dexeldesigns.postheta.PasswordPage;
+import com.dexeldesigns.postheta.Login;
 import com.dexeldesigns.postheta.R;
 import com.dexeldesigns.postheta.Utils.OrderTotal;
 import com.dexeldesigns.postheta.adapters.MenuListAdapter;
@@ -41,6 +41,7 @@ import com.dexeldesigns.postheta.splitbill.SplitFragment;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import static com.dexeldesigns.postheta.helper.Helper.getHelper;
@@ -63,7 +64,7 @@ public class Home extends Fragment {
     MenuListAdapter menuListAdapter;
     List<Product> data;
     GlobalClass global;
-    Button split, order_detail;
+    Button split, order_detail,clear;
 
     Orders orders;
 
@@ -76,7 +77,7 @@ public class Home extends Fragment {
         init(view);
         setupTabLayout();
         global.staffType = "";
-        orders = getHelper().getTempOrder();
+        orders = new Orders();
         bundle = this.getArguments();
 
         if (bundle != null) {
@@ -184,6 +185,7 @@ public class Home extends Fragment {
                         }
                     }
 
+
                 } else {
                     orders.setOrderTime(new Date().toString());
                     orders.setIsSync(false);
@@ -196,7 +198,7 @@ public class Home extends Fragment {
                         orders.setTable_no(global.TableNo);
                     }
 
-                    Long id = getHelper().getDaoSession().insert(orders);
+                    Long id = getHelper().getDaoSession().insertOrReplace(orders);
                     orders.setId(id);
 
                     for (int i = 0; i < global.orders.get(global.TableNo).size(); i++) {
@@ -219,8 +221,9 @@ public class Home extends Fragment {
                 }
 
 
-                global.orderid = null;
+                global.orderid=null;
                 global.TableNo="0";
+
                 Toast.makeText(getActivity(), "Order Sent", Toast.LENGTH_SHORT).show();
 
                 global.orders.put(global.TableNo,new ArrayList<OrderItems>());
@@ -261,7 +264,18 @@ public class Home extends Fragment {
 
             }
         });
+        clear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                global.TableNo="0";
+                global.orderid=null;
+                global.orders=new HashMap<String, List<OrderItems>>();
+                global.orders.put(global.TableNo,new ArrayList<OrderItems>());
+                recyclerAdapter1=new OrderAdapter(getActivity());
+                orderlist.setAdapter(recyclerAdapter1);
 
+            }
+        });
 
         return view;
 
@@ -271,13 +285,13 @@ public class Home extends Fragment {
     public void menulist() {
         data = new ArrayList<Product>();
         data.add(new Product("1", "1.0", "3.00", "Fusion Spring Roll", "http://www.tastyburger.com/wp-content/themes/tastyBurger/images/home/img-large-burger.jpg", "3.00", ""));
-        data.add(new Product("2", "1.0", "5.00", "Soups", "http://www.tastyburger.com/wp-content/themes/tastyBurger/images/home/img-large-burger.jpg", "3.00", ""));
-        data.add(new Product("3", "1.0", "8.00", "Veg roll", "http://www.tastyburger.com/wp-content/themes/tastyBurger/images/home/img-large-burger.jpg", "3.00", ""));
-        data.add(new Product("4", "1.0", "10.00", "Non-veg", "http://www.tastyburger.com/wp-content/themes/tastyBurger/images/home/img-large-burger.jpg", "3.00", ""));
-        data.add(new Product("5", "1.0", "11.00", "Ice-Cream", "http://www.tastyburger.com/wp-content/themes/tastyBurger/images/home/img-large-burger.jpg", "3.00", ""));
-        data.add(new Product("6", "1.0", "13.00", "Tomato sauce", "http://www.tastyburger.com/wp-content/themes/tastyBurger/images/home/img-large-burger.jpg", "3.00", ""));
-        data.add(new Product("7", "1.0", "8.00", "Fusion chicken", "http://www.tastyburger.com/wp-content/themes/tastyBurger/images/home/img-large-burger.jpg", "3.00", ""));
-        data.add(new Product("8", "1.0", "5.00", "Fried Rice", "http://www.tastyburger.com/wp-content/themes/tastyBurger/images/home/img-large-burger.jpg", "3.00", ""));
+        data.add(new Product("2", "1.0", "5.00", "Soups", "http://www.tastyburger.com/wp-content/themes/tastyBurger/images/home/img-large-burger.jpg", "5.00", ""));
+        data.add(new Product("3", "1.0", "8.00", "Veg roll", "http://www.tastyburger.com/wp-content/themes/tastyBurger/images/home/img-large-burger.jpg", "8.00", ""));
+        data.add(new Product("4", "1.0", "10.00", "Non-veg", "http://www.tastyburger.com/wp-content/themes/tastyBurger/images/home/img-large-burger.jpg", "10.00", ""));
+        data.add(new Product("5", "1.0", "11.00", "Ice-Cream", "http://www.tastyburger.com/wp-content/themes/tastyBurger/images/home/img-large-burger.jpg", "11.00", ""));
+        data.add(new Product("6", "1.0", "13.00", "Tomato sauce", "http://www.tastyburger.com/wp-content/themes/tastyBurger/images/home/img-large-burger.jpg", "13.00", ""));
+        data.add(new Product("7", "1.0", "8.00", "Fusion chicken", "http://www.tastyburger.com/wp-content/themes/tastyBurger/images/home/img-large-burger.jpg", "8.00", ""));
+        data.add(new Product("8", "1.0", "5.00", "Fried Rice", "http://www.tastyburger.com/wp-content/themes/tastyBurger/images/home/img-large-burger.jpg", "5.00", ""));
 
 
         for (int i = 0; i < data.size(); i++) {
@@ -320,6 +334,7 @@ public class Home extends Fragment {
         split = (Button) v.findViewById(R.id.split);
         order_detail = (Button) v.findViewById(R.id.order_detail);
         payment = (ImageView) v.findViewById(R.id.payment);
+        clear=(Button)v.findViewById(R.id.clear);
     }
 
     private void setupTabLayout() {
@@ -425,7 +440,8 @@ public class Home extends Fragment {
     }
 
     void logout() {
-        Intent i = new Intent(getActivity(), PasswordPage.class);
+        global.orders=new HashMap<>();
+        Intent i = new Intent(getActivity(), Login.class);
         getActivity().startActivity(i);
         getActivity().finish();
     }

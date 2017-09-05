@@ -3,6 +3,8 @@ package com.dexeldesigns.postheta.helper;
 import android.content.Context;
 
 
+import com.dexeldesigns.postheta.db_tables.model.Break;
+import com.dexeldesigns.postheta.db_tables.model.BreakDao;
 import com.dexeldesigns.postheta.db_tables.model.Clock;
 import com.dexeldesigns.postheta.db_tables.model.ClockDao;
 import com.dexeldesigns.postheta.db_tables.model.DaoSession;
@@ -17,6 +19,7 @@ import com.dexeldesigns.postheta.db_tables.model.StaffDao;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -121,6 +124,21 @@ public class Helper {
 
         // qb.where(qb.and(ClockDao.Properties.StaffId.eq(pin),ClockDao.Properties.Date.eq(date))).orderDesc(ClockDao.Properties.Id).limit(1);
         return qb.list();
+
+    }
+
+    public List<Break> getBreakData(Long clockId)
+    {
+
+            QueryBuilder<Break>  qb = daoSession.queryBuilder(Break.class);
+            qb.where(BreakDao.Properties.ClockId.eq(clockId)).orderDesc(BreakDao.Properties.Id).limit(1);
+            return qb.list();
+
+
+
+        // qb.where(qb.and(ClockDao.Properties.StaffId.eq(pin),ClockDao.Properties.Date.eq(date))).orderDesc(ClockDao.Properties.Id).limit(1);
+
+
 
     }
 

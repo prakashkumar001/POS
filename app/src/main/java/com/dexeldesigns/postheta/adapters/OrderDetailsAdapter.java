@@ -80,7 +80,13 @@ public class OrderDetailsAdapter extends RecyclerView.Adapter<OrderDetailsAdapte
 
 
                 globalClass.orderid=order_detail.get(position).getId();
-                globalClass.TableNo=order_detail.get(position).getTable_no();
+                if(order_detail.get(position).getTable_no()==null)
+                {
+
+                    globalClass.TableNo="0";
+
+                }
+
 
                 List<OrderItems> orderItems=getHelper().getOrderItems(globalClass.orderid);
 

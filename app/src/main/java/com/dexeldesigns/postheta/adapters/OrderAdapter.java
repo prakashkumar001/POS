@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 
 import com.dexeldesigns.postheta.R;
+import com.dexeldesigns.postheta.Utils.OrderTotal;
 import com.dexeldesigns.postheta.common.GlobalClass;
 import com.dexeldesigns.postheta.db_tables.model.OrderItems;
 import com.dexeldesigns.postheta.db_tables.model.Orders;
@@ -209,10 +210,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.MyViewHolder
             @Override
             public void onClick(View v) {
 
-               /* if(order.get(positions).getStatus().equalsIgnoreCase("Kitchen"))
-                {
-                    Toast.makeText(context,"you cant edit your order",Toast.LENGTH_SHORT).show();
-                }else*/ if(order.get(positions).getStatus().equalsIgnoreCase("void")) {
+              if(order.get(positions).getStatus().equalsIgnoreCase("void")) {
 
                 }else
                 {
@@ -234,6 +232,8 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.MyViewHolder
                 }
 
 
+                OrderTotal total=new OrderTotal(context);
+                total.totals();
 
 
                 //  notifyDataSetChanged();
@@ -252,11 +252,6 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.MyViewHolder
 
 
 
-               /* order.remove(positions);
-                recyclerAdapter1 = new OrderAdapter(context);
-                orderlist.setAdapter(recyclerAdapter1);
-                recyclerAdapter1.notifyDataSetChanged();
-                dialog.dismiss();*/
 
 
                if(global.orderid!=null)

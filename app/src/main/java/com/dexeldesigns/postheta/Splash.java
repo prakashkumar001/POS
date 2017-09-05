@@ -1,12 +1,10 @@
 package com.dexeldesigns.postheta;
 
 import android.content.Intent;
-import android.graphics.Matrix;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 /**
  * Created by Creative IT Works on 20-Apr-17.
@@ -27,7 +25,7 @@ public class Splash extends AppCompatActivity {
                         R.anim.fadeoutact);
                 Intent mainIntent = new Intent(
                         Splash.this,
-                        PasswordPage.class);
+                        Login.class);
 
                 Splash.this.startActivity(mainIntent);
 
