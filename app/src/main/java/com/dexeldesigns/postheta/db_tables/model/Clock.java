@@ -20,6 +20,7 @@ public class Clock {
     public String clock_in_time;
     public String clock_out_time;
     public String total_hours;
+    public String total_working_hours;
     public String date;
 
     @ToMany(referencedJoinProperty ="clockId" )
@@ -34,13 +35,15 @@ public class Clock {
     /** Used for active entity operations. */
     @Generated(hash = 150378241)
     private transient ClockDao myDao;
-    @Generated(hash = 456597791)
+    @Generated(hash = 521850980)
     public Clock(Long id, String clock_in_time, String clock_out_time,
-            String total_hours, String date, Long staffId) {
+            String total_hours, String total_working_hours, String date,
+            Long staffId) {
         this.id = id;
         this.clock_in_time = clock_in_time;
         this.clock_out_time = clock_out_time;
         this.total_hours = total_hours;
+        this.total_working_hours = total_working_hours;
         this.date = date;
         this.staffId = staffId;
     }
@@ -70,6 +73,12 @@ public class Clock {
     }
     public void setTotal_hours(String total_hours) {
         this.total_hours = total_hours;
+    }
+    public String getTotal_working_hours() {
+        return this.total_working_hours;
+    }
+    public void setTotal_working_hours(String total_working_hours) {
+        this.total_working_hours = total_working_hours;
     }
     public String getDate() {
         return this.date;
@@ -177,6 +186,5 @@ public class Clock {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getClockDao() : null;
     }
-   
-   
+
 }

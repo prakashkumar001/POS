@@ -120,7 +120,7 @@ public class Helper {
     public List<Clock> getClockData(Long pin)
     {
         QueryBuilder<Clock> qb = daoSession.queryBuilder(Clock.class);
-        qb.where(ClockDao.Properties.StaffId.eq(pin)).orderDesc(ClockDao.Properties.Id).limit(1);
+        qb.where(ClockDao.Properties.StaffId.eq(pin)).orderDesc(ClockDao.Properties.Id);
 
         // qb.where(qb.and(ClockDao.Properties.StaffId.eq(pin),ClockDao.Properties.Date.eq(date))).orderDesc(ClockDao.Properties.Id).limit(1);
         return qb.list();
@@ -133,6 +133,20 @@ public class Helper {
             QueryBuilder<Break>  qb = daoSession.queryBuilder(Break.class);
             qb.where(BreakDao.Properties.ClockId.eq(clockId)).orderDesc(BreakDao.Properties.Id).limit(1);
             return qb.list();
+
+
+
+        // qb.where(qb.and(ClockDao.Properties.StaffId.eq(pin),ClockDao.Properties.Date.eq(date))).orderDesc(ClockDao.Properties.Id).limit(1);
+
+
+
+    }
+    public List<Break> getBreakData(String staffId)
+    {
+
+        QueryBuilder<Break>  qb = daoSession.queryBuilder(Break.class);
+        qb.where(BreakDao.Properties.StaffId.eq(staffId)).orderDesc(BreakDao.Properties.Id);
+        return qb.list();
 
 
 

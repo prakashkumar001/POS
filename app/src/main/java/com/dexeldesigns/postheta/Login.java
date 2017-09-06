@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -16,10 +15,12 @@ import com.dexeldesigns.postheta.db_tables.model.Break;
 import com.dexeldesigns.postheta.db_tables.model.Clock;
 import com.dexeldesigns.postheta.db_tables.model.Staff;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import static com.dexeldesigns.postheta.helper.Helper.getHelper;
 
@@ -68,7 +69,7 @@ public class Login extends AppCompatActivity {
 
                 } else if (clockin.getText().toString().equalsIgnoreCase("Break")) {
 
-                    Clock clock=getHelper().getClockData(Long.parseLong(userId)).get(0);
+                    Clock clock = getHelper().getClockData(Long.parseLong(userId)).get(0);
                     Break breaks = new Break();
 
                     Calendar calendar = Calendar.getInstance();
@@ -85,15 +86,15 @@ public class Login extends AppCompatActivity {
 
                 } else if (clockin.getText().toString().equalsIgnoreCase("Resume")) {
 
-                    Clock clock=getHelper().getClockData(Long.parseLong(userId)).get(0);
-                    List<Break> breakdata=getHelper().getBreakData(clock.getId());
+                    Clock clock = getHelper().getClockData(Long.parseLong(userId)).get(0);
+                    List<Break> breakdata = getHelper().getBreakData(clock.getId());
                     if (breakdata.size() > 0) {
                         Break breaks = breakdata.get(0);
 
                         Calendar calendar = Calendar.getInstance();
                         String currenttime = df.format(calendar.getTime());
                         breaks.setBreak_end_time(currenttime);
-                        breaks.setTotal_break_time(getTimeDifference(breaks.getBreak_start_time(),breaks.getBreak_end_time()));
+                        breaks.setTotal_break_time(getTimeDifference(breaks.getBreak_start_time(), breaks.getBreak_end_time()));
                         breaks.setClockId(clock.getId());
                         getHelper().getDaoSession().update(breaks);
 
@@ -110,27 +111,32 @@ public class Login extends AppCompatActivity {
         clockout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Clock clock=getHelper().getClockData(Long.parseLong(userId)).get(0);
+                Clock clock = getHelper().getClockData(Long.parseLong(userId)).get(0);
                 Calendar calendar = Calendar.getInstance();
                 String currenttime = df.format(calendar.getTime());
                 clock.setClock_out_time(currenttime);
-                clock.setTotal_hours(getTimeDifference(clock.getClock_in_time(),clock.getClock_out_time()));
+                clock.setTotal_hours(getTimeDifference(clock.getClock_in_time(), clock.getClock_out_time()));
                 getHelper().getDaoSession().update(clock);
 
 
-
-
-                if(getHelper().getBreakData(clock.getId()).size()>0)
-                {
-                    if(getHelper().getBreakData(clock.getId()).get(0).getBreak_end_time()==null)
-                    {
-                        Break breaks=getHelper().getBreakData(clock.getId()).get(0);
+                if (getHelper().getBreakData(clock.getId()).size() > 0) {
+                    if (getHelper().getBreakData(clock.getId()).get(0).getBreak_end_time() == null) {
+                        Break breaks = getHelper().getBreakData(clock.getId()).get(0);
                         breaks.setBreak_end_time(currenttime);
-                        breaks.setTotal_break_time(getTimeDifference(breaks.getBreak_start_time(),breaks.getBreak_end_time()));
+                        breaks.setTotal_break_time(getTimeDifference(breaks.getBreak_start_time(), breaks.getBreak_end_time()));
 
                         getHelper().getDaoSession().update(breaks);
                     }
                 }
+
+
+                String totalclocktime = addTotaltime(getHelper().getClockData(Long.parseLong(userId)));
+                String totalbreaktime = addbreaktime(getHelper().getBreakData(userId));
+
+                String totalworkingtime=getTotalWorkhours(totalclocktime,totalbreaktime);
+
+                clock.setTotal_working_hours(totalworkingtime);
+                getHelper().getDaoSession().update(clock);
 
 
                 clockin.setText("Clock in");
@@ -250,23 +256,20 @@ public class Login extends AppCompatActivity {
 
                     Long staffId = getHelper().getDaoSession().insertOrReplace(staff);
                 }
-                if(!userId.equalsIgnoreCase(""))
-                {
+                if (!userId.equalsIgnoreCase("")) {
 
 
-                    if (getHelper().getClockData(Long.parseLong(userId)).size() > 0 ) {
+                    if (getHelper().getClockData(Long.parseLong(userId)).size() > 0) {
                         if (getHelper().getClockData(Long.parseLong(userId)).get(0).getClock_out_time() == null) {
 
                             Clock clock = getHelper().getClockData(Long.parseLong(userId)).get(0);
 
 
-                            if(getHelper().getBreakData(clock.getId()).size()==0)
-                            {
+                            if (getHelper().getBreakData(clock.getId()).size() == 0) {
 
-                                    clockin.setText("Break");
+                                clockin.setText("Break");
 
-                            }else if(getHelper().getBreakData(clock.getId()).size()>0)
-                            {
+                            } else if (getHelper().getBreakData(clock.getId()).size() > 0) {
                                 if (getHelper().getBreakData(clock.getId()).get(0).getBreak_end_time() == null) {
                                     clockin.setText("Resume");
                                 } else {
@@ -279,6 +282,8 @@ public class Login extends AppCompatActivity {
                     }
 
                 }
+
+
 
             } else {
                 onShakeImage();
@@ -342,4 +347,65 @@ public class Login extends AppCompatActivity {
 
     }
 
+    public String addTotaltime(List<Clock> clocks) {
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+        timeFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        long totaldate = 0;
+        for (int i = 0; i < clocks.size(); i++) {
+            try {
+                Date date1 = timeFormat.parse(clocks.get(i).getTotal_hours());
+                totaldate = totaldate + date1.getTime();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+        String date3 = timeFormat.format(new Date(totaldate));
+        System.out.println("The sum is " + date3);
+
+        return String.valueOf(date3);
+    }
+
+
+    public String addbreaktime(List<Break> breaks) {
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+        timeFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        long totaldate = 0;
+        for (int i = 0; i < breaks.size(); i++) {
+            try {
+                Date date1 = timeFormat.parse(breaks.get(i).getTotal_break_time());
+                totaldate = totaldate + date1.getTime();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+        String date3 = timeFormat.format(new Date(totaldate));
+        System.out.println("The sum is " + date3);
+
+        return String.valueOf(date3);
+    }
+
+    public String getTotalWorkhours(String starttime,String endtime) {
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+        timeFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        long totaldate = 0;
+
+            try {
+                Date date1 = timeFormat.parse(starttime);
+                Date date2 = timeFormat.parse(endtime);
+                totaldate = date1.getTime() - date2.getTime();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+
+
+        String date3 = timeFormat.format(new Date(totaldate));
+        System.out.println("The sum is " + date3);
+
+        return String.valueOf(date3);
+    }
 }
