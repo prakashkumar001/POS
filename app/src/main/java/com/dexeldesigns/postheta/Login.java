@@ -9,6 +9,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.dexeldesigns.postheta.common.GlobalClass;
 import com.dexeldesigns.postheta.db_tables.model.Break;
@@ -51,58 +52,67 @@ public class Login extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if (clockin.getText().toString().equalsIgnoreCase("Clock in")) {
-                    Clock clockdata = new Clock();
-
-                    Calendar calendar = Calendar.getInstance();
-                    String currenttime = df.format(calendar.getTime());
-                    clockdata.setClock_in_time(currenttime);
-                    clockdata.setStaffId(Long.parseLong(userId));
-                    Long id = getHelper().getDaoSession().insert(clockdata);
-                    clockdata.setId(id);
-
-
-                    clockin.setText("Break");
-                    Intent i = new Intent(Login.this, MainActivity.class);
-                    startActivity(i);
-                    finish();
-
-                } else if (clockin.getText().toString().equalsIgnoreCase("Break")) {
-
-                    Clock clock = getHelper().getClockData(Long.parseLong(userId)).get(0);
-                    Break breaks = new Break();
-
-                    Calendar calendar = Calendar.getInstance();
-                    String currenttime = df.format(calendar.getTime());
-                    breaks.setBreak_start_time(currenttime);
-                    breaks.setStaffId(userId);
-                    breaks.setClockId(clock.getId());
-
-                    Long id = getHelper().getDaoSession().insert(breaks);
-                    breaks.setId(id);
-
-                    clockin.setText("Resume");
-
-
-                } else if (clockin.getText().toString().equalsIgnoreCase("Resume")) {
-
-                    Clock clock = getHelper().getClockData(Long.parseLong(userId)).get(0);
-                    List<Break> breakdata = getHelper().getBreakData(clock.getId());
-                    if (breakdata.size() > 0) {
-                        Break breaks = breakdata.get(0);
+                if(!userId.equalsIgnoreCase(""))
+                {
+                    if (clockin.getText().toString().equalsIgnoreCase("Clock in")) {
+                        Clock clockdata = new Clock();
 
                         Calendar calendar = Calendar.getInstance();
                         String currenttime = df.format(calendar.getTime());
-                        breaks.setBreak_end_time(currenttime);
-                        breaks.setTotal_break_time(getTimeDifference(breaks.getBreak_start_time(), breaks.getBreak_end_time()));
-                        breaks.setClockId(clock.getId());
-                        getHelper().getDaoSession().update(breaks);
+                        clockdata.setClock_in_time(currenttime);
+                        clockdata.setStaffId(Long.parseLong(userId));
+                        Long id = getHelper().getDaoSession().insert(clockdata);
+                        clockdata.setId(id);
 
 
                         clockin.setText("Break");
+                        Intent i = new Intent(Login.this, MainActivity.class);
+                        startActivity(i);
+                        finish();
+
+                    } else if (clockin.getText().toString().equalsIgnoreCase("Break")) {
+
+                        Clock clock = getHelper().getClockData(Long.parseLong(userId)).get(0);
+                        Break breaks = new Break();
+
+                        Calendar calendar = Calendar.getInstance();
+                        String currenttime = df.format(calendar.getTime());
+                        breaks.setBreak_start_time(currenttime);
+                        breaks.setStaffId(userId);
+                        breaks.setClockId(clock.getId());
+
+                        Long id = getHelper().getDaoSession().insert(breaks);
+                        breaks.setId(id);
+
+                        clockin.setText("Resume");
+
+
+                    } else if (clockin.getText().toString().equalsIgnoreCase("Resume")) {
+
+                        Clock clock = getHelper().getClockData(Long.parseLong(userId)).get(0);
+                        List<Break> breakdata = getHelper().getBreakData(clock.getId());
+                        if (breakdata.size() > 0) {
+                            Break breaks = breakdata.get(0);
+
+                            Calendar calendar = Calendar.getInstance();
+                            String currenttime = df.format(calendar.getTime());
+                            breaks.setBreak_end_time(currenttime);
+                            breaks.setTotal_break_time(getTimeDifference(breaks.getBreak_start_time(), breaks.getBreak_end_time()));
+                            breaks.setClockId(clock.getId());
+                            getHelper().getDaoSession().update(breaks);
+
+
+                            clockin.setText("Break");
+                        }
+
                     }
 
+
+                }else
+                {
+                    Toast.makeText(getApplication(),"Please Enter correct pin",Toast.LENGTH_SHORT).show();
                 }
+
 
 
             }
@@ -111,35 +121,45 @@ public class Login extends AppCompatActivity {
         clockout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Clock clock = getHelper().getClockData(Long.parseLong(userId)).get(0);
-                Calendar calendar = Calendar.getInstance();
-                String currenttime = df.format(calendar.getTime());
-                clock.setClock_out_time(currenttime);
-                clock.setTotal_hours(getTimeDifference(clock.getClock_in_time(), clock.getClock_out_time()));
-                getHelper().getDaoSession().update(clock);
+
+                if(!userId.equalsIgnoreCase("")) {
 
 
-                if (getHelper().getBreakData(clock.getId()).size() > 0) {
-                    if (getHelper().getBreakData(clock.getId()).get(0).getBreak_end_time() == null) {
-                        Break breaks = getHelper().getBreakData(clock.getId()).get(0);
-                        breaks.setBreak_end_time(currenttime);
-                        breaks.setTotal_break_time(getTimeDifference(breaks.getBreak_start_time(), breaks.getBreak_end_time()));
+                    Clock clock = getHelper().getClockData(Long.parseLong(userId)).get(0);
+                    Calendar calendar = Calendar.getInstance();
+                    String currenttime = df.format(calendar.getTime());
+                    clock.setClock_out_time(currenttime);
+                    clock.setTotal_hours(getTimeDifference(clock.getClock_in_time(), clock.getClock_out_time()));
+                    getHelper().getDaoSession().update(clock);
 
-                        getHelper().getDaoSession().update(breaks);
+
+                    if (getHelper().getBreakData(clock.getId()).size() > 0) {
+                        if (getHelper().getBreakData(clock.getId()).get(0).getBreak_end_time() == null) {
+                            Break breaks = getHelper().getBreakData(clock.getId()).get(0);
+                            breaks.setBreak_end_time(currenttime);
+                            breaks.setTotal_break_time(getTimeDifference(breaks.getBreak_start_time(), breaks.getBreak_end_time()));
+
+                            getHelper().getDaoSession().update(breaks);
+                        }
                     }
+
+
+                    String totalclocktime = addTotaltime(getHelper().getClockData(Long.parseLong(userId)));
+                    String totalbreaktime = addbreaktime(getHelper().getBreakData(userId));
+
+                    String totalworkingtime = getTotalWorkhours(totalclocktime, totalbreaktime);
+
+                    clock.setTotal_working_hours(totalworkingtime);
+                    getHelper().getDaoSession().update(clock);
+
+
+                    clockin.setText("Clock in");
+
+
+                }else {
+                    Toast.makeText(getApplication(),"Please Enter correct pin",Toast.LENGTH_SHORT).show();
+
                 }
-
-
-                String totalclocktime = addTotaltime(getHelper().getClockData(Long.parseLong(userId)));
-                String totalbreaktime = addbreaktime(getHelper().getBreakData(userId));
-
-                String totalworkingtime=getTotalWorkhours(totalclocktime,totalbreaktime);
-
-                clock.setTotal_working_hours(totalworkingtime);
-                getHelper().getDaoSession().update(clock);
-
-
-                clockin.setText("Clock in");
             }
         });
 
