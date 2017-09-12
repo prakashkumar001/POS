@@ -1,5 +1,6 @@
 package com.dexeldesigns.postheta;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -11,26 +12,41 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.dexeldesigns.postheta.adapters.OrderDetailsAdapter;
 import com.dexeldesigns.postheta.common.GlobalClass;
+import com.dexeldesigns.postheta.db_tables.model.Break;
+import com.dexeldesigns.postheta.db_tables.model.Clock;
 import com.dexeldesigns.postheta.fragments.*;
 import com.dexeldesigns.postheta.model.Tables;
 import com.dexeldesigns.postheta.splitbill.SplitFragment;
 
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import static com.dexeldesigns.postheta.helper.Helper.getHelper;
 
 
 /**
@@ -50,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
     int drawables_select[] = new int[]{R.mipmap.home_select, R.mipmap.staff_select, R.mipmap.setting_select, R.mipmap.favourite_select, R.mipmap.tabel_select};
     private Paint p = new Paint();
     boolean doubleBackToExitPressedOnce = false;
+    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -94,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
         staff_clock.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                clockDialog();
             }
         });
 
@@ -200,7 +217,7 @@ public class MainActivity extends AppCompatActivity {
     private void init() {
 
         staff_clock = (ImageView) findViewById(R.id.staff_clock);
-        settings = (ImageView) findViewById(R.id.staff_clock);
+        settings = (ImageView) findViewById(R.id.settings);
         tabLayoutHeader = (TabLayout) findViewById(R.id.tab_header);
         clock_in_time = (TextView) findViewById(R.id.clockin_time);
         clock_in_Timer = (TextView) findViewById(R.id.clock_timer);
@@ -385,4 +402,250 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    void clockDialog()
+    {
+        // custom dialog
+        final Dialog dialog = new Dialog(MainActivity.this, R.style.AppTheme);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.clock_dialog );
+        dialog.getWindow().setGravity(Gravity.CENTER);
+        //dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        int width = metrics.widthPixels;
+        int height = metrics.heightPixels;
+        dialog.show();
+        dialog.getWindow().setLayout((8 * width) / 10, (8 * height) / 10);
+
+        final Button clock_data=(Button)dialog.findViewById(R.id.break_resume) ;
+        final Button clockout=(Button)dialog.findViewById(R.id.clock_out) ;
+
+        if (getHelper().getClockData(Long.parseLong(global.staffPin)).size() > 0) {
+            if (getHelper().getClockData(Long.parseLong(global.staffPin)).get(0).getClock_out_time() == null) {
+
+                Clock clock = getHelper().getClockData(Long.parseLong(global.staffPin)).get(0);
+
+
+                if (getHelper().getBreakData(clock.getId()).size() == 0) {
+
+                    clock_data.setText("Break");
+
+                   /* Intent i = new Intent(MainActivity.this, Login.class);
+                    startActivity(i);
+                    finish();*/
+
+                } else if (getHelper().getBreakData(clock.getId()).size() > 0) {
+                    if (getHelper().getBreakData(clock.getId()).get(0).getBreak_end_time() == null) {
+                        clock_data.setText("Resume");
+                    } else {
+                        clock_data.setText("Break");
+                       /* Intent i = new Intent(MainActivity.this, Login.class);
+                        startActivity(i);
+                        finish();*/
+                    }
+                }
+            }
+        }
+
+        clock_data.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                    if (clock_data.getText().toString().equalsIgnoreCase("Clock in")) {
+                        Clock clockdata = new Clock();
+
+                        Calendar calendar = Calendar.getInstance();
+                        String currenttime = df.format(calendar.getTime());
+                        clockdata.setClock_in_time(currenttime);
+                        clockdata.setStaffId(Long.parseLong(global.staffPin));
+                        Long id = getHelper().getDaoSession().insert(clockdata);
+                        clockdata.setId(id);
+
+
+                        clock_data.setText("Break");
+                        Intent i = new Intent(MainActivity.this, Login.class);
+                        startActivity(i);
+                        finish();
+
+                    } else if (clock_data.getText().toString().equalsIgnoreCase("Break")) {
+
+                        Clock clock = getHelper().getClockData(Long.parseLong(global.staffPin)).get(0);
+                        Break breaks = new Break();
+
+                        Calendar calendar = Calendar.getInstance();
+                        String currenttime = df.format(calendar.getTime());
+                        breaks.setBreak_start_time(currenttime);
+                        breaks.setStaffId(global.staffPin);
+                        breaks.setClockId(clock.getId());
+
+                        Long id = getHelper().getDaoSession().insert(breaks);
+                        breaks.setId(id);
+
+                        clock_data.setText("Resume");
+                        Intent i = new Intent(MainActivity.this, Login.class);
+                        startActivity(i);
+                        finish();
+
+                    } else if (clock_data.getText().toString().equalsIgnoreCase("Resume")) {
+
+                        Clock clock = getHelper().getClockData(Long.parseLong(global.staffPin)).get(0);
+                        List<Break> breakdata = getHelper().getBreakData(clock.getId());
+                        if (breakdata.size() > 0) {
+                            Break breaks = breakdata.get(0);
+
+                            Calendar calendar = Calendar.getInstance();
+                            String currenttime = df.format(calendar.getTime());
+                            breaks.setBreak_end_time(currenttime);
+                            breaks.setTotal_break_time(getTimeDifference(breaks.getBreak_start_time(), breaks.getBreak_end_time()));
+                            breaks.setClockId(clock.getId());
+                            getHelper().getDaoSession().update(breaks);
+
+
+                            clock_data.setText("Break");
+                        }
+
+                    }
+
+
+
+
+
+            }
+        });
+        clockout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Clock clock = getHelper().getClockData(Long.parseLong(global.staffPin)).get(0);
+                Calendar calendar = Calendar.getInstance();
+                String currenttime = df.format(calendar.getTime());
+                clock.setClock_out_time(currenttime);
+                clock.setTotal_hours(getTimeDifference(clock.getClock_in_time(), clock.getClock_out_time()));
+                getHelper().getDaoSession().update(clock);
+
+
+                if (getHelper().getBreakData(clock.getId()).size() > 0) {
+                    if (getHelper().getBreakData(clock.getId()).get(0).getBreak_end_time() == null) {
+                        Break breaks = getHelper().getBreakData(clock.getId()).get(0);
+                        breaks.setBreak_end_time(currenttime);
+                        breaks.setTotal_break_time(getTimeDifference(breaks.getBreak_start_time(), breaks.getBreak_end_time()));
+
+                        getHelper().getDaoSession().update(breaks);
+                    }
+                }
+
+
+                String totalclocktime = addTotaltime(getHelper().getClockData(Long.parseLong(global.staffPin)));
+                String totalbreaktime = addbreaktime(getHelper().getBreakData(global.staffPin));
+
+                String totalworkingtime = getTotalWorkhours(totalclocktime, totalbreaktime);
+
+                clock.setTotal_working_hours(totalworkingtime);
+                getHelper().getDaoSession().update(clock);
+
+
+                dialog.dismiss();
+
+                Intent i = new Intent(MainActivity.this, Login.class);
+                startActivity(i);
+                finish();
+            }
+        });
+
+        dialog.show();
+    }
+    public String getTimeDifference(String dateStart, String dateStop) {
+        //HH converts hour in 24 hours format (0-23), day calculation
+        SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+
+        Date d1 = null;
+        Date d2 = null;
+        long diffHours = 00;
+        long diffMinutes = 00;
+        long diffSeconds = 00;
+        try {
+            d1 = df.parse(dateStart);
+            d2 = df.parse(dateStop);
+
+            //in milliseconds
+            long diff = d2.getTime() - d1.getTime();
+
+            diffSeconds = diff / 1000 % 60;
+            diffMinutes = diff / (60 * 1000) % 60;
+            diffHours = diff / (60 * 60 * 1000) % 24;
+            long diffDays = diff / (24 * 60 * 60 * 1000);
+
+            System.out.print(diffDays + " days, ");
+            System.out.print(diffHours + " hours, ");
+            System.out.print(diffMinutes + " minutes, ");
+            System.out.print(diffSeconds + " seconds.");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return String.valueOf(diffHours) + ":" + String.valueOf(diffMinutes) + ":" + String.valueOf(diffSeconds);
+
+
+    }
+    public String addTotaltime(List<Clock> clocks) {
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+        timeFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        long totaldate = 0;
+        for (int i = 0; i < clocks.size(); i++) {
+            try {
+                Date date1 = timeFormat.parse(clocks.get(i).getTotal_hours());
+                totaldate = totaldate + date1.getTime();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+        String date3 = timeFormat.format(new Date(totaldate));
+        System.out.println("The sum is " + date3);
+
+        return String.valueOf(date3);
+    }
+
+
+    public String addbreaktime(List<Break> breaks) {
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+        timeFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        long totaldate = 0;
+        for (int i = 0; i < breaks.size(); i++) {
+            try {
+                Date date1 = timeFormat.parse(breaks.get(i).getTotal_break_time());
+                totaldate = totaldate + date1.getTime();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+        String date3 = timeFormat.format(new Date(totaldate));
+        System.out.println("The sum is " + date3);
+
+        return String.valueOf(date3);
+    }
+
+    public String getTotalWorkhours(String starttime,String endtime) {
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+        timeFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        long totaldate = 0;
+
+        try {
+            Date date1 = timeFormat.parse(starttime);
+            Date date2 = timeFormat.parse(endtime);
+            totaldate = date1.getTime() - date2.getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+
+
+        String date3 = timeFormat.format(new Date(totaldate));
+        System.out.println("The sum is " + date3);
+
+        return String.valueOf(date3);
+    }
 }

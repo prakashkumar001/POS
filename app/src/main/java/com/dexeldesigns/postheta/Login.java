@@ -104,7 +104,9 @@ public class Login extends AppCompatActivity {
 
                             clockin.setText("Break");
                         }
-
+                        Intent i = new Intent(Login.this, MainActivity.class);
+                        startActivity(i);
+                        finish();
                     }
 
 
@@ -283,11 +285,18 @@ public class Login extends AppCompatActivity {
 
                                 clockin.setText("Break");
 
+                                Intent i = new Intent(Login.this, MainActivity.class);
+                                startActivity(i);
+                                finish();
+
                             } else if (getHelper().getBreakData(clock.getId()).size() > 0) {
                                 if (getHelper().getBreakData(clock.getId()).get(0).getBreak_end_time() == null) {
                                     clockin.setText("Resume");
                                 } else {
                                     clockin.setText("Break");
+                                    Intent i = new Intent(Login.this, MainActivity.class);
+                                    startActivity(i);
+                                    finish();
                                 }
                             }
                         }
