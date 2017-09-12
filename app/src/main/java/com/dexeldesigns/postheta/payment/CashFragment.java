@@ -12,10 +12,13 @@ import android.widget.Toast;
 
 import com.dexeldesigns.postheta.MainActivity;
 import com.dexeldesigns.postheta.R;
+import com.dexeldesigns.postheta.db_tables.model.Orders;
 import com.dexeldesigns.postheta.fragments.Home;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+
+import static com.dexeldesigns.postheta.helper.Helper.getHelper;
 
 /**
  * Created by Creative IT Works on 02-Aug-17.
@@ -29,6 +32,7 @@ public class CashFragment extends Fragment implements View.OnClickListener {
     private Button btn0, btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btnDot, btnClr, btnBckSpc;
     private Button btnPayPartial,btnPayFull;
     double getBalanceToPay;
+    String orderId;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -38,6 +42,7 @@ public class CashFragment extends Fragment implements View.OnClickListener {
         if(bundle != null){
             // handle your code here.
             getBalanceToPay=Double.parseDouble(bundle.getString("Totalpayment"));
+            orderId=bundle.getString("orderid");
             //Toast.makeText(getActivity(),String.valueOf(getBalanceToPay),Toast.LENGTH_SHORT).show();
             total.setText(String.valueOf(getBalanceToPay));
 
@@ -162,6 +167,13 @@ public class CashFragment extends Fragment implements View.OnClickListener {
     }
 
     private void payAmountDue() {
+
+        Orders order=getHelper().getOrderById(Long.parseLong(orderId));
+        order.setPayment_status("Paid");
+        getHelper().getDaoSession().update(order);
+
+
+
         ((MainActivity) getActivity()).logout();
     }
 

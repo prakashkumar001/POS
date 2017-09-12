@@ -52,7 +52,7 @@ import static com.dexeldesigns.postheta.helper.Helper.getHelper;
  */
 
 public class Home extends Fragment {
-    public static TextView total;
+    public static TextView total,subtotal,tax;
     public static RecyclerView menulist, productlist, orderlist;
     public static OrderAdapter recyclerAdapter1;
     public String tableNo, takewayno;
@@ -186,6 +186,14 @@ public class Home extends Fragment {
                     }
 
 
+                    Orders orders1=getHelper().getOrderById(global.orderid);
+                    orders1.setGst_amount(tax.getText().toString());
+                    orders1.setSubTotal(subtotal.getText().toString());
+                    orders1.setTotal(total.getText().toString());
+                    getHelper().getDaoSession().update(orders1);
+
+
+
                 } else {
                     orders.setOrderTime(new Date().toString());
                     orders.setIsSync(false);
@@ -197,6 +205,10 @@ public class Home extends Fragment {
                         orders.setOrderType("DINE IN");
                         orders.setTable_no(global.TableNo);
                     }
+
+                    orders.setGst_amount(tax.getText().toString());
+                    orders.setSubTotal(subtotal.getText().toString());
+                    orders.setTotal(total.getText().toString());
 
                     Long id = getHelper().getDaoSession().insertOrReplace(orders);
                     orders.setId(id);
@@ -248,6 +260,10 @@ public class Home extends Fragment {
             public void onClick(View v) {
                 global.paytype = "";
                 SplitFragment fragments = new SplitFragment();
+                Bundle bundle = new Bundle();
+                bundle.putString("Totalpayment", total.getText().toString()); // Put anything what you want
+                bundle.putString("orderid",String.valueOf(global.orderid));
+
                 loadFragment(fragments);
 
             }
@@ -256,11 +272,26 @@ public class Home extends Fragment {
         payment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PaymentFragment fragment = new PaymentFragment();
-                Bundle bundle = new Bundle();
-                bundle.putString("Totalpayment", total.getText().toString()); // Put anything what you want
-                fragment.setArguments(bundle);
-                loadFragment(fragment);
+                if(global.orderid!=null)
+                {
+                    if(getHelper().getOrderById(global.orderid).getPayment_status()!=null)
+                    {
+                        Toast.makeText(getActivity(),"Already Paid ",Toast.LENGTH_SHORT).show();
+                    }else {
+                        PaymentFragment fragment = new PaymentFragment();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("Totalpayment", total.getText().toString()); // Put anything what you want
+                        bundle.putString("orderid",String.valueOf(global.orderid));
+                        fragment.setArguments(bundle);
+                        loadFragment(fragment);
+
+                    }
+                }else
+                {
+                    Toast.makeText(getActivity(),"Click confirm to sent order to kitchen then make payment",Toast.LENGTH_SHORT).show();
+
+
+                }
 
             }
         });
@@ -335,6 +366,8 @@ public class Home extends Fragment {
         order_detail = (Button) v.findViewById(R.id.order_detail);
         payment = (ImageView) v.findViewById(R.id.payment);
         clear=(Button)v.findViewById(R.id.clear);
+        subtotal = (TextView) v.findViewById(R.id.subtotal);
+        tax = (TextView) v.findViewById(R.id.tax);
     }
 
     private void setupTabLayout() {

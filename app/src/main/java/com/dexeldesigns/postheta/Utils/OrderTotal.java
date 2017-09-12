@@ -4,7 +4,10 @@ import android.content.Context;
 import android.util.Log;
 
 import com.dexeldesigns.postheta.common.GlobalClass;
+import com.dexeldesigns.postheta.db_tables.model.GST;
 import com.dexeldesigns.postheta.fragments.Home;
+
+import static com.dexeldesigns.postheta.helper.Helper.getHelper;
 
 /**
  * Created by Creative IT Works on 16-Jun-17.
@@ -43,7 +46,22 @@ public class OrderTotal {
 
 
 
-        Home.total.setText(String.valueOf(totalvalue));
+
+
+        Home.subtotal.setText(String.valueOf(totalvalue));
+
+        if(getHelper().getGST()!=null)
+        {
+            GST gstvalue=getHelper().getGST();
+
+            Double gstamount=totalvalue*(Double.parseDouble(gstvalue.getGstamount())/100);
+            Home.tax.setText(String.format("%.2f",gstamount));
+
+            Double total=totalvalue+gstamount;
+
+            Home.total.setText(String.format("%.2f", total));
+        }
+
     }
 
 

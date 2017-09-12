@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
     TimerTask timerTask;
     Handler handler;
     Runnable runnable;
-    ImageView staff_clock;
+    ImageView staff_clock,settings;
     GlobalClass global;
     int drawables_unselect[] = new int[]{R.mipmap.home_unselect, R.mipmap.staff_unselect, R.mipmap.setting_unselect, R.mipmap.favourite_unselect, R.mipmap.tabel_unselect};
     int drawables_select[] = new int[]{R.mipmap.home_select, R.mipmap.staff_select, R.mipmap.setting_select, R.mipmap.favourite_select, R.mipmap.tabel_select};
@@ -81,8 +81,12 @@ public class MainActivity extends AppCompatActivity {
 
         if(global.paytype.equalsIgnoreCase("split"))
         {
+
+
+
             splitcheckTotal();
         }else {
+            global.orderid=null;
             initFragments();
         }
 
@@ -91,6 +95,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+            }
+        });
+
+        settings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Settings fragments=new Settings();
+                loadFragment(fragments);
             }
         });
 
@@ -187,6 +200,7 @@ public class MainActivity extends AppCompatActivity {
     private void init() {
 
         staff_clock = (ImageView) findViewById(R.id.staff_clock);
+        settings = (ImageView) findViewById(R.id.staff_clock);
         tabLayoutHeader = (TabLayout) findViewById(R.id.tab_header);
         clock_in_time = (TextView) findViewById(R.id.clockin_time);
         clock_in_Timer = (TextView) findViewById(R.id.clock_timer);
@@ -318,6 +332,7 @@ public class MainActivity extends AppCompatActivity {
         }
     public void logout()
     {
+
         Toast.makeText(getApplicationContext(),"Payment success",Toast.LENGTH_SHORT).show();
         Intent i=new Intent(this, Login.class);
         startActivity(i);
@@ -344,7 +359,7 @@ public class MainActivity extends AppCompatActivity {
 
         if(totalvalue==0.0)
         {
-
+            global.orderid=null;
             global.paytype="";
             for(int i=0;i<global.select_tables.size();i++)
             {

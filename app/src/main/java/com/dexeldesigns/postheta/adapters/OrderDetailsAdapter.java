@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 
 import com.dexeldesigns.postheta.R;
+import com.dexeldesigns.postheta.Utils.OrderTotal;
 import com.dexeldesigns.postheta.common.GlobalClass;
 import com.dexeldesigns.postheta.db_tables.model.OrderItems;
 import com.dexeldesigns.postheta.db_tables.model.Orders;
@@ -96,6 +97,9 @@ public class OrderDetailsAdapter extends RecyclerView.Adapter<OrderDetailsAdapte
                 Home.recyclerAdapter1=new OrderAdapter(context);
                 Home.orderlist.setAdapter(Home.recyclerAdapter1);
                 notifyDataSetChanged();
+                OrderTotal total=new OrderTotal(context);
+                total.totals();
+
 
                 dialog.dismiss();
 

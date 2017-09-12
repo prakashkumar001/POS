@@ -8,6 +8,8 @@ import com.dexeldesigns.postheta.db_tables.model.BreakDao;
 import com.dexeldesigns.postheta.db_tables.model.Clock;
 import com.dexeldesigns.postheta.db_tables.model.ClockDao;
 import com.dexeldesigns.postheta.db_tables.model.DaoSession;
+import com.dexeldesigns.postheta.db_tables.model.GST;
+import com.dexeldesigns.postheta.db_tables.model.GSTDao;
 import com.dexeldesigns.postheta.db_tables.model.OrderItems;
 import com.dexeldesigns.postheta.db_tables.model.OrderItemsDao;
 import com.dexeldesigns.postheta.db_tables.model.Orders;
@@ -153,6 +155,22 @@ public class Helper {
         // qb.where(qb.and(ClockDao.Properties.StaffId.eq(pin),ClockDao.Properties.Date.eq(date))).orderDesc(ClockDao.Properties.Id).limit(1);
 
 
+
+    }
+
+    public GST getGST()
+    {
+        QueryBuilder<GST>  qb = daoSession.queryBuilder(GST.class);
+        qb.where(GSTDao.Properties.Id.eq(1));
+        return qb.unique();
+
+
+    }
+
+    public List<Staff> getStaffList() {
+
+        QueryBuilder<Staff> qb = daoSession.queryBuilder(Staff.class);
+        return qb.list();
 
     }
 

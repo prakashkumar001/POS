@@ -35,6 +35,8 @@ public class Orders {
 
     private String payment_status;
 
+    private String gst_amount;
+
     private boolean isSync;
 
     private boolean isContainsvoid;
@@ -47,10 +49,11 @@ public class Orders {
     @Generated(hash = 1717339351)
     private transient OrdersDao myDao;
 
-    @Generated(hash = 170362108)
+    @Generated(hash = 25486647)
     public Orders(Long id, String subTotal, String Total, String orderTime,
             String orderStatus, String Table_no, String orderType,
-            String payment_status, boolean isSync, boolean isContainsvoid) {
+            String payment_status, String gst_amount, boolean isSync,
+            boolean isContainsvoid) {
         this.id = id;
         this.subTotal = subTotal;
         this.Total = Total;
@@ -59,6 +62,7 @@ public class Orders {
         this.Table_no = Table_no;
         this.orderType = orderType;
         this.payment_status = payment_status;
+        this.gst_amount = gst_amount;
         this.isSync = isSync;
         this.isContainsvoid = isContainsvoid;
     }
@@ -129,6 +133,14 @@ public class Orders {
 
     public void setPayment_status(String payment_status) {
         this.payment_status = payment_status;
+    }
+
+    public String getGst_amount() {
+        return this.gst_amount;
+    }
+
+    public void setGst_amount(String gst_amount) {
+        this.gst_amount = gst_amount;
     }
 
     public boolean getIsSync() {

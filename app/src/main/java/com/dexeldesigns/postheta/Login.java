@@ -263,21 +263,15 @@ public class Login extends AppCompatActivity {
             i3.setImageResource(R.drawable.ic_pin_select);
             i4.setImageResource(R.drawable.ic_pin_select);
 
-            if (userId.equalsIgnoreCase("1234") || userId.equalsIgnoreCase("1111")) {
-                if (userId.equalsIgnoreCase("1111")) {
+            if (getHelper().getStaff(userId)!=null ) {
+                Staff staff=getHelper().getStaff(userId);
+                if (staff.getPin().equalsIgnoreCase("1111")) {
                     global.staffType = "admin";
                 } else {
                     global.staffType = "staff";
                     global.staffPin = "1234";
 
-                    Staff staff = new Staff();
-                    staff.setName("admin");
-                    staff.setPin("1234");
-
-                    Long staffId = getHelper().getDaoSession().insertOrReplace(staff);
                 }
-                if (!userId.equalsIgnoreCase("")) {
-
 
                     if (getHelper().getClockData(Long.parseLong(userId)).size() > 0) {
                         if (getHelper().getClockData(Long.parseLong(userId)).get(0).getClock_out_time() == null) {
@@ -301,7 +295,7 @@ public class Login extends AppCompatActivity {
                         clockin.setText("Clock in");
                     }
 
-                }
+
 
 
 

@@ -49,12 +49,13 @@ public class SplitFragment extends Fragment {
     int index=-1;
     String getQuantity;
     double totalvalue=0.0;
+    Bundle bundle;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.split_page, container, false);
         global = new GlobalClass();
-
+        bundle = this.getArguments();
         order=new ArrayList<>();
         order=global.orders.get(global.TableNo);
         loader = ImageLoader.getInstance();
@@ -381,6 +382,7 @@ public class SplitFragment extends Fragment {
         PaymentFragment fragment=new PaymentFragment();
         Bundle bundle = new Bundle();
         bundle.putString("Totalpayment",String.valueOf(totalvalue)); // Put anything what you want
+        bundle.putString("orderid",String.valueOf(global.orderid)); // Put anything what you want
         fragment.setArguments(bundle);
         loadFragment(fragment);
 
