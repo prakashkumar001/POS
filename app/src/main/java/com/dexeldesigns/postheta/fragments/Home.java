@@ -64,7 +64,7 @@ public class Home extends Fragment {
     MenuListAdapter menuListAdapter;
     List<Product> data;
     GlobalClass global;
-    Button split, order_detail,clear;
+    Button split, order_detail,clear,hold;
 
     Orders orders;
 
@@ -135,7 +135,27 @@ public class Home extends Fragment {
 
 
 
+hold.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View v) {
 
+        if(global.orderid!=null)
+        {
+            if( getHelper().getOrderById(global.orderid).getPayment_status()!=null)
+            {
+                Toast.makeText(getActivity(),"This order wont be hold",Toast.LENGTH_SHORT).show();
+            }else if(getHelper().getOrderById(global.orderid).getIsHold()!=false) {
+                Toast.makeText(getActivity(),"Already this order is on hold",Toast.LENGTH_SHORT).show();
+            }else
+            {
+
+                Orders orders=getHelper().getOrderById(global.orderid);
+                orders.setIsHold(true);
+                getHelper().getDaoSession().update(orders);
+            }
+        }
+    }
+});
 
 
 
@@ -368,6 +388,7 @@ public class Home extends Fragment {
         clear=(Button)v.findViewById(R.id.clear);
         subtotal = (TextView) v.findViewById(R.id.subtotal);
         tax = (TextView) v.findViewById(R.id.tax);
+        hold=(Button)v.findViewById(R.id.hold);
     }
 
     private void setupTabLayout() {
@@ -403,7 +424,7 @@ public class Home extends Fragment {
 
                     //initFragments();
 
-                    TableService fragments = new TableService();
+                    BookFragments fragments = new BookFragments();
                     loadFragment(fragments);
 
 

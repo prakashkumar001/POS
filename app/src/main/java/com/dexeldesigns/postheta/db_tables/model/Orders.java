@@ -41,6 +41,8 @@ public class Orders {
 
     private boolean isContainsvoid;
 
+    private Boolean isHold;
+
     /** Used to resolve relations */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
@@ -49,11 +51,11 @@ public class Orders {
     @Generated(hash = 1717339351)
     private transient OrdersDao myDao;
 
-    @Generated(hash = 25486647)
+    @Generated(hash = 935386151)
     public Orders(Long id, String subTotal, String Total, String orderTime,
             String orderStatus, String Table_no, String orderType,
             String payment_status, String gst_amount, boolean isSync,
-            boolean isContainsvoid) {
+            boolean isContainsvoid, Boolean isHold) {
         this.id = id;
         this.subTotal = subTotal;
         this.Total = Total;
@@ -65,6 +67,7 @@ public class Orders {
         this.gst_amount = gst_amount;
         this.isSync = isSync;
         this.isContainsvoid = isContainsvoid;
+        this.isHold = isHold;
     }
 
     @Generated(hash = 1753857294)
@@ -159,6 +162,14 @@ public class Orders {
         this.isContainsvoid = isContainsvoid;
     }
 
+    public Boolean getIsHold() {
+        return this.isHold;
+    }
+
+    public void setIsHold(Boolean isHold) {
+        this.isHold = isHold;
+    }
+
     /**
      * To-many relationship, resolved on first access (and after reset).
      * Changes to to-many relations are not persisted, make changes to the target entity.
@@ -229,8 +240,6 @@ public class Orders {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getOrdersDao() : null;
     }
-
-
 
 
 

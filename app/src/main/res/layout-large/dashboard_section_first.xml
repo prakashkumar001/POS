@@ -405,8 +405,12 @@
                             android:src="@drawable/pt_os_bill_cancel_select"
                             android:layout_height="wrap_content" />
 
-                        <View
+                        <Button
+                            android:id="@+id/hold"
                             android:layout_width="0dp"
+                            android:text="Hold "
+                            android:layout_gravity="center"
+                            android:gravity="center"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"/>
 
