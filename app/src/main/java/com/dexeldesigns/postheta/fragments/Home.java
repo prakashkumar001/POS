@@ -144,14 +144,26 @@ hold.setOnClickListener(new View.OnClickListener() {
             if( getHelper().getOrderById(global.orderid).getPayment_status()!=null)
             {
                 Toast.makeText(getActivity(),"This order wont be hold",Toast.LENGTH_SHORT).show();
-            }else if(getHelper().getOrderById(global.orderid).getIsHold()!=false) {
+            }else if(getHelper().getOrderById(global.orderid).getIsHold()==true) {
                 Toast.makeText(getActivity(),"Already this order is on hold",Toast.LENGTH_SHORT).show();
             }else
             {
 
+                Toast.makeText(getActivity(),"This Order will be hold",Toast.LENGTH_SHORT).show();
+
                 Orders orders=getHelper().getOrderById(global.orderid);
                 orders.setIsHold(true);
                 getHelper().getDaoSession().update(orders);
+
+
+                global.TableNo="0";
+                table_no.setText("");
+                global.orderid=null;
+                global.orders=new HashMap<String, List<OrderItems>>();
+                global.orders.put(global.TableNo,new ArrayList<OrderItems>());
+                resetDiplayamount();
+                recyclerAdapter1=new OrderAdapter(getActivity());
+                orderlist.setAdapter(recyclerAdapter1);
             }
         }
     }
@@ -212,7 +224,18 @@ hold.setOnClickListener(new View.OnClickListener() {
                     orders1.setTotal(total.getText().toString());
                     getHelper().getDaoSession().update(orders1);
 
+                    global.orderid=null;
+                    global.TableNo="0";
 
+                    Toast.makeText(getActivity(), "Order Sent", Toast.LENGTH_SHORT).show();
+
+                    global.orders.put(global.TableNo,new ArrayList<OrderItems>());
+                    recyclerAdapter1=new OrderAdapter(getActivity());
+                    orderlist.setAdapter(recyclerAdapter1);
+
+
+
+                    logout();
 
                 } else {
                     orders.setOrderTime(new Date().toString());
@@ -229,6 +252,7 @@ hold.setOnClickListener(new View.OnClickListener() {
                     orders.setGst_amount(tax.getText().toString());
                     orders.setSubTotal(subtotal.getText().toString());
                     orders.setTotal(total.getText().toString());
+                    orders.setIsHold(false);
 
                     Long id = getHelper().getDaoSession().insertOrReplace(orders);
                     orders.setId(id);
@@ -249,22 +273,22 @@ hold.setOnClickListener(new View.OnClickListener() {
 
 
                     }
+                    global.orderid=null;
+                    global.TableNo="0";
 
+                    Toast.makeText(getActivity(), "Order Sent", Toast.LENGTH_SHORT).show();
+
+                    global.orders.put(global.TableNo,new ArrayList<OrderItems>());
+                    recyclerAdapter1=new OrderAdapter(getActivity());
+                    orderlist.setAdapter(recyclerAdapter1);
+
+
+
+                    logout();
                 }
 
 
-                global.orderid=null;
-                global.TableNo="0";
 
-                Toast.makeText(getActivity(), "Order Sent", Toast.LENGTH_SHORT).show();
-
-                global.orders.put(global.TableNo,new ArrayList<OrderItems>());
-                recyclerAdapter1=new OrderAdapter(getActivity());
-                orderlist.setAdapter(recyclerAdapter1);
-
-
-
-                logout();
             }
         });
 
@@ -322,6 +346,7 @@ hold.setOnClickListener(new View.OnClickListener() {
                 global.orderid=null;
                 global.orders=new HashMap<String, List<OrderItems>>();
                 global.orders.put(global.TableNo,new ArrayList<OrderItems>());
+                resetDiplayamount();
                 recyclerAdapter1=new OrderAdapter(getActivity());
                 orderlist.setAdapter(recyclerAdapter1);
 
@@ -335,14 +360,14 @@ hold.setOnClickListener(new View.OnClickListener() {
 
     public void menulist() {
         data = new ArrayList<Product>();
-        data.add(new Product("1", "1.0", "3.00", "Fusion Spring Roll", "http://www.tastyburger.com/wp-content/themes/tastyBurger/images/home/img-large-burger.jpg", "3.00", ""));
-        data.add(new Product("2", "1.0", "5.00", "Soups", "http://www.tastyburger.com/wp-content/themes/tastyBurger/images/home/img-large-burger.jpg", "5.00", ""));
-        data.add(new Product("3", "1.0", "8.00", "Veg roll", "http://www.tastyburger.com/wp-content/themes/tastyBurger/images/home/img-large-burger.jpg", "8.00", ""));
-        data.add(new Product("4", "1.0", "10.00", "Non-veg", "http://www.tastyburger.com/wp-content/themes/tastyBurger/images/home/img-large-burger.jpg", "10.00", ""));
-        data.add(new Product("5", "1.0", "11.00", "Ice-Cream", "http://www.tastyburger.com/wp-content/themes/tastyBurger/images/home/img-large-burger.jpg", "11.00", ""));
-        data.add(new Product("6", "1.0", "13.00", "Tomato sauce", "http://www.tastyburger.com/wp-content/themes/tastyBurger/images/home/img-large-burger.jpg", "13.00", ""));
-        data.add(new Product("7", "1.0", "8.00", "Fusion chicken", "http://www.tastyburger.com/wp-content/themes/tastyBurger/images/home/img-large-burger.jpg", "8.00", ""));
-        data.add(new Product("8", "1.0", "5.00", "Fried Rice", "http://www.tastyburger.com/wp-content/themes/tastyBurger/images/home/img-large-burger.jpg", "5.00", ""));
+        data.add(new Product("1", "1.0", "3.00", "Fusion Spring Roll", "http://www.tellusaboutus.com/comments/images/BK-WebComment/BB_WHOPPER-v1.png", "3.00", ""));
+        data.add(new Product("2", "1.0", "5.00", "Soups", "https://timedotcom.files.wordpress.com/2017/08/pizzahutrewards-em-624200530.jpg", "5.00", ""));
+        data.add(new Product("3", "1.0", "8.00", "Veg roll", "http://paypizzapal.com/wp-content/uploads/2014/01/pizza-hut2.jpg", "8.00", ""));
+        data.add(new Product("4", "1.0", "10.00", "Non-veg", "http://www.ndtv.com/cooks/images/moong-dal-samosa-new.jpg", "10.00", ""));
+        data.add(new Product("5", "1.0", "11.00", "Ice-Cream", "https://timedotcom.files.wordpress.com/2017/08/pizzahutrewards-em-624200530.jpg", "11.00", ""));
+        data.add(new Product("6", "1.0", "13.00", "Tomato sauce", "http://paypizzapal.com/wp-content/uploads/2014/01/pizza-hut2.jpg", "13.00", ""));
+        data.add(new Product("7", "1.0", "8.00", "Fusion chicken", "http://www.tellusaboutus.com/comments/images/BK-WebComment/BB_WHOPPER-v1.png", "8.00", ""));
+        data.add(new Product("8", "1.0", "5.00", "Fried Rice", "http://www.tellusaboutus.com/comments/images/BK-WebComment/BB_WHOPPER-v1.png", "5.00", ""));
 
 
         for (int i = 0; i < data.size(); i++) {
@@ -369,7 +394,7 @@ hold.setOnClickListener(new View.OnClickListener() {
     private void init(View v) {
         //table_edit_selection = (ImageView) v.findViewById(R.id.table_edit_selection);
         //addcheck = (ImageView) v.findViewById(R.id.addcheck);
-        table_data = (LinearLayout) v.findViewById(R.id.table_data);
+       // table_data = (LinearLayout) v.findViewById(R.id.table_data);
         cancel_order = (ImageView) v.findViewById(R.id.cancel_order);
         staff_clock = (ImageView) v.findViewById(R.id.staff_clock);
         confirm_order = (ImageView) v.findViewById(R.id.confirm_order);
@@ -538,5 +563,12 @@ hold.setOnClickListener(new View.OnClickListener() {
 
     }
 
+    void resetDiplayamount()
+    {
+        total.setText("0.0");
+        subtotal.setText("0.0");
+        tax.setText("0.0");
+        total.setText("0.0");
+    }
 
 }

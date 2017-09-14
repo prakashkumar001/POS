@@ -306,7 +306,8 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.MyViewHolder
                 dialog.dismiss();
 
 
-                // lastCheckPosition=-1;
+                 lastCheckPosition=-1;
+                notifyDataSetChanged();
 
                /* holder.title.setTextColor(context.getResources().getColor(android.R.color.black));
                 holder.eachitem.setTextColor(context.getResources().getColor(android.R.color.black));
