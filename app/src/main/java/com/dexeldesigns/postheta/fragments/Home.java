@@ -13,6 +13,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -36,6 +37,7 @@ import com.dexeldesigns.postheta.common.GlobalClass;
 import com.dexeldesigns.postheta.db_tables.model.OrderItems;
 import com.dexeldesigns.postheta.db_tables.model.Orders;
 import com.dexeldesigns.postheta.db_tables.model.Product;
+import com.dexeldesigns.postheta.helper.SimpleItemTouchHelperCallback;
 import com.dexeldesigns.postheta.payment.PaymentFragment;
 import com.dexeldesigns.postheta.splitbill.SplitFragment;
 
@@ -65,6 +67,7 @@ public class Home extends Fragment {
     List<Product> data;
     GlobalClass global;
     Button split, order_detail,clear,hold;
+    private ItemTouchHelper mItemTouchHelper;
 
     Orders orders;
 
@@ -105,6 +108,7 @@ public class Home extends Fragment {
                         new Runnable() {
                             @Override
                             public void run() {
+                                global.TableNo="0";
 
                                 table_no.setText("Take Away No. \n" + global.TakeAwayno);
 
@@ -128,6 +132,7 @@ public class Home extends Fragment {
             LinearLayoutManager ll = new LinearLayoutManager(getActivity());
             ll.setOrientation(LinearLayoutManager.VERTICAL);
             orderlist.setLayoutManager(ll);
+
             orderlist.setAdapter(recyclerAdapter1);
         }
 
@@ -244,6 +249,7 @@ hold.setOnClickListener(new View.OnClickListener() {
                     orders.setIsContainsvoid(false);
                     if (global.TableNo.equalsIgnoreCase("0")) {
                         orders.setOrderType("TAKE AWAY");
+                        orders.setTakeAwayno(global.TakeAwayno);
                     } else {
                         orders.setOrderType("DINE IN");
                         orders.setTable_no(global.TableNo);
@@ -388,6 +394,9 @@ hold.setOnClickListener(new View.OnClickListener() {
         LinearLayoutManager llma = new LinearLayoutManager(getActivity());
         llma.setOrientation(LinearLayoutManager.VERTICAL);
         menulist.setLayoutManager(llma);
+        ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(menuListAdapter);
+        mItemTouchHelper = new ItemTouchHelper(callback);
+        mItemTouchHelper.attachToRecyclerView(menulist);
         menulist.setAdapter(menuListAdapter);
     }
 

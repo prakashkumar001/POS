@@ -21,15 +21,19 @@ import com.dexeldesigns.postheta.common.GlobalClass;
 import com.dexeldesigns.postheta.db_tables.model.OrderItems;
 import com.dexeldesigns.postheta.db_tables.model.Product;
 import com.dexeldesigns.postheta.fragments.Home;
+import com.dexeldesigns.postheta.helper.ItemTouchHelperAdapter;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import static com.dexeldesigns.postheta.helper.Helper.getHelper;
 
-public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.MyViewHolder> {
+
+public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.MyViewHolder> implements ItemTouchHelperAdapter {
 
     ImageLoader loader;
     GlobalClass global;
@@ -111,6 +115,19 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
         return moviesList.size();
     }
 
+    @Override
+    public void onItemMove(int fromPosition, int toPosition) {
+        Collections.swap(moviesList, fromPosition, toPosition);
+        notifyItemMoved(fromPosition, toPosition);
+        notifyItemChanged(fromPosition);
+        notifyItemChanged(toPosition);
+        getHelper().getDaoSession().deleteAll(Product.class);
+
+        loadProductItems();
+    }
+
+
+
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView title;
@@ -152,5 +169,14 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
 
         return false;
     }
+    void loadProductItems()
+    {
+        for (int i = 0; i < moviesList.size(); i++) {
+            getHelper().insertOrUpdateProduct(moviesList.get(i));
+            moviesList.get(i).setId(Long.parseLong(String.valueOf(i)));
 
+
+        }
+
+    }
 }

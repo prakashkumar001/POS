@@ -489,6 +489,7 @@ public class TableService extends Fragment {
 
                             global.TableNo = textView.getText().toString();
 
+
                             ((MainActivity) getActivity()).loadFragmentsfromTable(global.TableNo);
 
 

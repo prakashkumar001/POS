@@ -31,6 +31,8 @@ public class Orders {
 
     private String Table_no;
 
+    private String TakeAwayno;
+
     private String orderType;
 
     private String payment_status;
@@ -41,7 +43,7 @@ public class Orders {
 
     private boolean isContainsvoid;
 
-    private Boolean isHold;
+    private boolean isHold;
 
     /** Used to resolve relations */
     @Generated(hash = 2040040024)
@@ -51,17 +53,18 @@ public class Orders {
     @Generated(hash = 1717339351)
     private transient OrdersDao myDao;
 
-    @Generated(hash = 935386151)
+    @Generated(hash = 1579774860)
     public Orders(Long id, String subTotal, String Total, String orderTime,
-            String orderStatus, String Table_no, String orderType,
-            String payment_status, String gst_amount, boolean isSync,
-            boolean isContainsvoid, Boolean isHold) {
+            String orderStatus, String Table_no, String TakeAwayno,
+            String orderType, String payment_status, String gst_amount,
+            boolean isSync, boolean isContainsvoid, boolean isHold) {
         this.id = id;
         this.subTotal = subTotal;
         this.Total = Total;
         this.orderTime = orderTime;
         this.orderStatus = orderStatus;
         this.Table_no = Table_no;
+        this.TakeAwayno = TakeAwayno;
         this.orderType = orderType;
         this.payment_status = payment_status;
         this.gst_amount = gst_amount;
@@ -122,6 +125,14 @@ public class Orders {
         this.Table_no = Table_no;
     }
 
+    public String getTakeAwayno() {
+        return this.TakeAwayno;
+    }
+
+    public void setTakeAwayno(String TakeAwayno) {
+        this.TakeAwayno = TakeAwayno;
+    }
+
     public String getOrderType() {
         return this.orderType;
     }
@@ -162,11 +173,11 @@ public class Orders {
         this.isContainsvoid = isContainsvoid;
     }
 
-    public Boolean getIsHold() {
+    public boolean getIsHold() {
         return this.isHold;
     }
 
-    public void setIsHold(Boolean isHold) {
+    public void setIsHold(boolean isHold) {
         this.isHold = isHold;
     }
 
@@ -240,6 +251,7 @@ public class Orders {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getOrdersDao() : null;
     }
+
 
 
 
