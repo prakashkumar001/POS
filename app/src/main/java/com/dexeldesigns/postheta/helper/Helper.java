@@ -5,9 +5,13 @@ import android.content.Context;
 
 import com.dexeldesigns.postheta.db_tables.model.Break;
 import com.dexeldesigns.postheta.db_tables.model.BreakDao;
+import com.dexeldesigns.postheta.db_tables.model.Categories;
+import com.dexeldesigns.postheta.db_tables.model.CategoriesDao;
 import com.dexeldesigns.postheta.db_tables.model.Clock;
 import com.dexeldesigns.postheta.db_tables.model.ClockDao;
 import com.dexeldesigns.postheta.db_tables.model.DaoSession;
+import com.dexeldesigns.postheta.db_tables.model.Discount;
+import com.dexeldesigns.postheta.db_tables.model.DiscountDao;
 import com.dexeldesigns.postheta.db_tables.model.GST;
 import com.dexeldesigns.postheta.db_tables.model.GSTDao;
 import com.dexeldesigns.postheta.db_tables.model.OrderItems;
@@ -18,6 +22,8 @@ import com.dexeldesigns.postheta.db_tables.model.Product;
 import com.dexeldesigns.postheta.db_tables.model.ProductDao;
 import com.dexeldesigns.postheta.db_tables.model.Staff;
 import com.dexeldesigns.postheta.db_tables.model.StaffDao;
+import com.dexeldesigns.postheta.db_tables.model.SubCategories;
+import com.dexeldesigns.postheta.db_tables.model.SubCategoriesDao;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 
@@ -54,9 +60,19 @@ public class Helper {
 
 
     //getMenuItems
-    public List<Product> getMenuItems() {
+    public List<Categories> getMenuItems() {
 
-        QueryBuilder<Product> qb = daoSession.queryBuilder(Product.class);
+        QueryBuilder<Categories> qb = daoSession.queryBuilder(Categories.class);
+        return qb.list();
+
+    }
+
+
+    //getMenuItems
+    public List<SubCategories> getProductItems(Long category_id) {
+
+        QueryBuilder<SubCategories> qb = daoSession.queryBuilder(SubCategories.class);
+        qb.where(SubCategoriesDao.Properties.Category_id.eq(category_id));
         return qb.list();
 
     }
@@ -97,10 +113,24 @@ public class Helper {
         qb.where(OrdersDao.Properties.Id.eq(orderId));
         return qb.unique();
     }
-    public long insertOrUpdateProduct(Product product) {
-        QueryBuilder<Product> qb = daoSession.queryBuilder(Product.class);
-        qb.where(ProductDao.Properties.Product_id.eq(product.getProduct_id()));
-        Product existingCustomer=qb.unique();
+    public long insertOrUpdateCategories(Categories product) {
+        QueryBuilder<Categories> qb = daoSession.queryBuilder(Categories.class);
+        qb.where(CategoriesDao.Properties.Category_id.eq(product.getCategory_id()));
+        Categories existingCustomer=qb.unique();
+        if(existingCustomer==null)
+            return daoSession.insert(product);
+        else {
+            long id = existingCustomer.getId();
+            return id;
+        }
+
+    }
+
+    public long insertOrUpdateSubCategories(SubCategories product) {
+        QueryBuilder<SubCategories> qb = daoSession.queryBuilder(SubCategories.class);
+        qb.where(SubCategoriesDao.Properties.SubCategoryId.eq(product.getSubCategoryId()));
+        qb.where(SubCategoriesDao.Properties.Category_id.eq(product.getCategory_id()));
+        SubCategories existingCustomer=qb.unique();
         if(existingCustomer==null)
             return daoSession.insert(product);
         else {
@@ -162,6 +192,15 @@ public class Helper {
     {
         QueryBuilder<GST>  qb = daoSession.queryBuilder(GST.class);
         qb.where(GSTDao.Properties.Id.eq(1));
+        return qb.unique();
+
+
+    }
+
+    public Discount getDiscount()
+    {
+        QueryBuilder<Discount>  qb = daoSession.queryBuilder(Discount.class);
+        qb.where(DiscountDao.Properties.Id.eq(1));
         return qb.unique();
 
 

@@ -7,8 +7,6 @@ package com.dexeldesigns.postheta.adapters;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.os.AsyncTask;
-import android.os.Handler;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -18,38 +16,113 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-
 import com.dexeldesigns.postheta.R;
+import com.dexeldesigns.postheta.db_tables.model.Categories;
 import com.dexeldesigns.postheta.db_tables.model.Product;
+import com.dexeldesigns.postheta.db_tables.model.SubCategories;
 import com.dexeldesigns.postheta.fragments.Home;
 import com.dexeldesigns.postheta.helper.ItemTouchHelperAdapter;
-import com.dexeldesigns.postheta.helper.SimpleItemTouchHelperCallback;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import static com.dexeldesigns.postheta.helper.Helper.getHelper;
 
-public class MenuListAdapter extends RecyclerView.Adapter<MenuListAdapter.MyViewHolder> implements ItemTouchHelperAdapter {
+public class MenuListAdapter extends RecyclerView.Adapter<MenuListAdapter.MyViewHolder>  {
 
-    private List<Product> moviesList;
     ProductListAdapter productListAdapter;
     Activity context;
-    int lastCheckPosition=-1;
+    int lastCheckPosition = -1;
     ProgressDialog dialog;
     ItemTouchHelper mItemTouchHelper;
+    private List<Categories> moviesList;
+
+    public MenuListAdapter(Activity context, List<Categories> moviesList) {
+        this.moviesList = moviesList;
+        this.context = context;
+
+
+    }
+
 
     @Override
-    public void onItemMove(int fromPosition, int toPosition) {
-        Collections.swap(moviesList, fromPosition, toPosition);
-        notifyItemMoved(fromPosition, toPosition);
-        notifyItemChanged(fromPosition);
-        notifyItemChanged(toPosition);
+    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View itemView = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.menu_list_iem, parent, false);
 
-        getHelper().getDaoSession().deleteAll(Product.class);
-
-        loadMenuItems();
+        return new MyViewHolder(itemView);
     }
+
+    @Override
+    public void onBindViewHolder(MyViewHolder holder, final int position) {
+
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+/*
+
+                final int SPLASH_DISPLAY_TIME = 2000;
+                new Handler().postDelayed(new Runnable() {
+                    public void run() {
+*/
+
+                if (getHelper().getMenuItems().size() > 0) {
+                    List<SubCategories> datas = new ArrayList<>();
+                    datas = getHelper().getProductItems(moviesList.get(position).getId());
+                    loadData(datas, position);
+                }
+
+
+
+
+              /*      }
+                }, SPLASH_DISPLAY_TIME);
+*/
+
+
+                // lastCheckPosition=position;
+                //notifyDataSetChanged();
+            }
+        });
+
+
+        if (lastCheckPosition == position) {
+            holder.title.setText(moviesList.get(position).getTitle());
+            holder.title.setTextColor(context.getResources().getColor(R.color.orange));
+            holder.layout_bg.setBackgroundResource(R.color.tab_background_unselected);
+
+
+        } else {
+            holder.title.setText(moviesList.get(position).getTitle());
+            holder.title.setTextColor(context.getResources().getColor(android.R.color.black));
+            holder.layout_bg.setBackgroundResource(android.R.color.transparent);
+
+        }
+
+    }
+
+    @Override
+    public int getItemCount() {
+        return moviesList.size();
+    }
+
+    public void loadData(final List<SubCategories> data, int position) {
+        GridLayoutManager llms = new GridLayoutManager(context, 3);
+        llms.setOrientation(GridLayoutManager.VERTICAL);
+        Home.productlist.setLayoutManager(llms);
+
+        productListAdapter = new ProductListAdapter(context, data);
+        Home.productlist.setAdapter(productListAdapter);
+
+        lastCheckPosition = position;
+        notifyDataSetChanged();
+
+    }
+
+
 
 
 
@@ -63,117 +136,5 @@ public class MenuListAdapter extends RecyclerView.Adapter<MenuListAdapter.MyView
             layout_bg = (LinearLayout) view.findViewById(R.id.laybg);
 
         }
-    }
-
-
-    public MenuListAdapter(Activity context, List<Product> moviesList) {
-        this.moviesList = moviesList;
-        this.context=context;
-    }
-
-    @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.menu_list_iem, parent, false);
-
-        return new MyViewHolder(itemView);
-    }
-
-    @Override
-    public void onBindViewHolder(MyViewHolder holder, final int position) {
-
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog=new ProgressDialog(context);
-                dialog.setMessage("Loading....");
-                dialog.show();
-
-
-                final int SPLASH_DISPLAY_TIME = 2000;
-                new Handler().postDelayed(new Runnable() {
-                    public void run() {
-
-
-
-                      loadData();
-
-
-                    }
-                }, SPLASH_DISPLAY_TIME);
-
-
-
-                lastCheckPosition=position;
-                notifyDataSetChanged();
-            }
-        });
-
-
-
-
-
-        if(lastCheckPosition==position)
-        {
-            holder.title.setText(moviesList.get(position).getTitle());
-            holder.title.setTextColor(context.getResources().getColor(R.color.orange));
-            holder.layout_bg.setBackgroundResource(R.color.tab_background_unselected);
-
-
-        }else {
-           holder.title.setText(moviesList.get(position).getTitle());
-            holder.title.setTextColor(context.getResources().getColor(android.R.color.black));
-            holder.layout_bg.setBackgroundResource(android.R.color.transparent);
-
-        }
-
-    }
-
-
-
-    @Override
-    public int getItemCount() {
-        return moviesList.size();
-    }
-
-
-    public void loadData()
-    {
-      class loadTask extends AsyncTask<String,Void,String>
-       {
-
-           @Override
-           protected String doInBackground(String... params) {
-
-               String result="";
-
-               return result;
-           }
-
-           @Override
-           protected void onPostExecute(String aVoid) {
-               super.onPostExecute(aVoid);
-               dialog.dismiss();
-               productListAdapter=new ProductListAdapter(context,moviesList);
-               GridLayoutManager llms  = new GridLayoutManager(context, 3);
-               llms.setOrientation(GridLayoutManager.VERTICAL);
-               Home.productlist.setLayoutManager(llms);
-               ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(productListAdapter);
-               mItemTouchHelper = new ItemTouchHelper(callback);
-               mItemTouchHelper.attachToRecyclerView(Home.productlist);
-               Home.productlist.setAdapter(productListAdapter);
-           }
-       }new loadTask().execute();
-    }
-
-   void loadMenuItems()
-    {
-        for (int i = 0; i < moviesList.size(); i++) {
-        getHelper().insertOrUpdateProduct(moviesList.get(i));
-            moviesList.get(i).setId(Long.parseLong(String.valueOf(i)));
-
-
-    }
-
     }
 }

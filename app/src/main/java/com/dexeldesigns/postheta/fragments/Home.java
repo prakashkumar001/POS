@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -33,10 +34,13 @@ import com.dexeldesigns.postheta.Utils.OrderTotal;
 import com.dexeldesigns.postheta.adapters.MenuListAdapter;
 import com.dexeldesigns.postheta.adapters.OrderAdapter;
 import com.dexeldesigns.postheta.adapters.OrderDetailsAdapter;
+import com.dexeldesigns.postheta.adapters.ProductListAdapter;
 import com.dexeldesigns.postheta.common.GlobalClass;
+import com.dexeldesigns.postheta.db_tables.model.Categories;
 import com.dexeldesigns.postheta.db_tables.model.OrderItems;
 import com.dexeldesigns.postheta.db_tables.model.Orders;
 import com.dexeldesigns.postheta.db_tables.model.Product;
+import com.dexeldesigns.postheta.db_tables.model.SubCategories;
 import com.dexeldesigns.postheta.helper.SimpleItemTouchHelperCallback;
 import com.dexeldesigns.postheta.payment.PaymentFragment;
 import com.dexeldesigns.postheta.splitbill.SplitFragment;
@@ -54,7 +58,7 @@ import static com.dexeldesigns.postheta.helper.Helper.getHelper;
  */
 
 public class Home extends Fragment {
-    public static TextView total,subtotal,tax;
+    public static TextView total,subtotal,tax,discount;
     public static RecyclerView menulist, productlist, orderlist;
     public static OrderAdapter recyclerAdapter1;
     public String tableNo, takewayno;
@@ -64,11 +68,12 @@ public class Home extends Fragment {
     TextView table_no, clock_in_time, clock_in_Timer;
     ImageView cancel_order, confirm_order, staff_clock, addcheck, payment;
     MenuListAdapter menuListAdapter;
-    List<Product> data;
+    List<Categories> data;
+    List<SubCategories> subCategories;
     GlobalClass global;
     Button split, order_detail,clear,hold;
     private ItemTouchHelper mItemTouchHelper;
-
+    public static ProductListAdapter productListAdapter;
     Orders orders;
 
     @Nullable
@@ -359,32 +364,76 @@ hold.setOnClickListener(new View.OnClickListener() {
             }
         });
 
+
+
         return view;
 
     }
 
 
     public void menulist() {
-        data = new ArrayList<Product>();
-        data.add(new Product("1", "1.0", "3.00", "Fusion Spring Roll", "http://www.tellusaboutus.com/comments/images/BK-WebComment/BB_WHOPPER-v1.png", "3.00", ""));
-        data.add(new Product("2", "1.0", "5.00", "Soups", "https://timedotcom.files.wordpress.com/2017/08/pizzahutrewards-em-624200530.jpg", "5.00", ""));
-        data.add(new Product("3", "1.0", "8.00", "Veg roll", "http://paypizzapal.com/wp-content/uploads/2014/01/pizza-hut2.jpg", "8.00", ""));
-        data.add(new Product("4", "1.0", "10.00", "Non-veg", "http://www.ndtv.com/cooks/images/moong-dal-samosa-new.jpg", "10.00", ""));
-        data.add(new Product("5", "1.0", "11.00", "Ice-Cream", "https://timedotcom.files.wordpress.com/2017/08/pizzahutrewards-em-624200530.jpg", "11.00", ""));
-        data.add(new Product("6", "1.0", "13.00", "Tomato sauce", "http://paypizzapal.com/wp-content/uploads/2014/01/pizza-hut2.jpg", "13.00", ""));
-        data.add(new Product("7", "1.0", "8.00", "Fusion chicken", "http://www.tellusaboutus.com/comments/images/BK-WebComment/BB_WHOPPER-v1.png", "8.00", ""));
-        data.add(new Product("8", "1.0", "5.00", "Fried Rice", "http://www.tellusaboutus.com/comments/images/BK-WebComment/BB_WHOPPER-v1.png", "5.00", ""));
+        data = new ArrayList<Categories>();
+        data.add(new Categories("1", "1.0", "3.00", "Fusion Spring Roll", "http://www.tellusaboutus.com/comments/images/BK-WebComment/BB_WHOPPER-v1.png", "3.00", ""));
+        data.add(new Categories("2", "1.0", "5.00", "Soups", "https://timedotcom.files.wordpress.com/2017/08/pizzahutrewards-em-624200530.jpg", "5.00", ""));
+        data.add(new Categories("3", "1.0", "8.00", "Veg roll", "http://paypizzapal.com/wp-content/uploads/2014/01/pizza-hut2.jpg", "8.00", ""));
+        data.add(new Categories("4", "1.0", "10.00", "Non-veg", "http://www.ndtv.com/cooks/images/moong-dal-samosa-new.jpg", "10.00", ""));
+        data.add(new Categories("5", "1.0", "11.00", "Ice-Cream", "https://timedotcom.files.wordpress.com/2017/08/pizzahutrewards-em-624200530.jpg", "11.00", ""));
+        data.add(new Categories("6", "1.0", "13.00", "Tomato sauce", "http://paypizzapal.com/wp-content/uploads/2014/01/pizza-hut2.jpg", "13.00", ""));
+        data.add(new Categories("7", "1.0", "8.00", "Fusion chicken", "http://www.tellusaboutus.com/comments/images/BK-WebComment/BB_WHOPPER-v1.png", "8.00", ""));
+        data.add(new Categories("8", "1.0", "5.00", "Fried Rice", "http://www.tellusaboutus.com/comments/images/BK-WebComment/BB_WHOPPER-v1.png", "5.00", ""));
+
 
 
         for (int i = 0; i < data.size(); i++) {
-            getHelper().insertOrUpdateProduct(data.get(i));
-            data.get(i).setId(Long.parseLong(String.valueOf(i)));
+            Long id=getHelper().insertOrUpdateCategories(data.get(i));
+           // data.get(i).setId(Long.parseLong(String.valueOf(i)));
+          //  SubCategories subCategories1=new SubCategories( "1.0", "3.00", "Fusion Spring Roll", "http://www.tellusaboutus.com/comments/images/BK-WebComment/BB_WHOPPER-v1.png", "3.00", "",getHelper().getMenuItems().get(i).getId());
+
+           // getHelper().insertOrUpdateSubCategories(subCategories1);
+            subCategories=new ArrayList<>();
+            subCategories.add(new SubCategories( "1","1.0", "3.00", "Fusion Spring Roll", "http://www.tellusaboutus.com/comments/images/BK-WebComment/BB_WHOPPER-v1.png", "3.00", "",id,"1","11",true));
+            subCategories.add(new SubCategories("2","1.0", "5.00", "Soups", "https://timedotcom.files.wordpress.com/2017/08/pizzahutrewards-em-624200530.jpg", "5.00", "",id,"4","5",false));
+            subCategories.add(new SubCategories("3", "1.0", "8.00", "Veg roll", "http://paypizzapal.com/wp-content/uploads/2014/01/pizza-hut2.jpg", "8.00", "",id,"4","6",true));
+            subCategories.add(new SubCategories( "4","1.0", "10.00", "Non-veg", "http://www.ndtv.com/cooks/images/moong-dal-samosa-new.jpg", "10.00", "",id,"4","10",true));
+            subCategories.add(new SubCategories( "5","1.0", "11.00", "Ice-Cream", "https://timedotcom.files.wordpress.com/2017/08/pizzahutrewards-em-624200530.jpg", "11.00", "",id,"2","0",true));
+            subCategories.add(new SubCategories("6","1.0", "13.00", "Tomato sauce", "http://paypizzapal.com/wp-content/uploads/2014/01/pizza-hut2.jpg", "13.00", "",id,"3","10",true));
+            subCategories.add(new SubCategories( "7","1.0", "8.00", "Fusion chicken", "http://www.tellusaboutus.com/comments/images/BK-WebComment/BB_WHOPPER-v1.png", "8.00", "",id,"1","1",false));
+            subCategories.add(new SubCategories("8","1.0", "5.00", "Fried Rice", "http://www.tellusaboutus.com/comments/images/BK-WebComment/BB_WHOPPER-v1.png", "5.00", "",id,"1","1",true));
+
+            for(int l=0;l<subCategories.size();l++)
+            {
+                getHelper().insertOrUpdateSubCategories(subCategories.get(l));
+            }
+        }
+
+       /* for(int i=0;i<getHelper().getMenuItems().size();i++)
+        {
 
 
         }
+*/
+
+
+
+
+
+            // subCategories.get(i).setId(Long.parseLong(String.valueOf(i)));
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         if (getHelper().getMenuItems().size() > 0) {
-            List<Product> datas = new ArrayList<>();
+            List<Categories> datas = new ArrayList<>();
             datas = getHelper().getMenuItems();
             int size = datas.size();
             menuListAdapter = new MenuListAdapter(getActivity(), datas);
@@ -394,9 +443,7 @@ hold.setOnClickListener(new View.OnClickListener() {
         LinearLayoutManager llma = new LinearLayoutManager(getActivity());
         llma.setOrientation(LinearLayoutManager.VERTICAL);
         menulist.setLayoutManager(llma);
-        ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(menuListAdapter);
-        mItemTouchHelper = new ItemTouchHelper(callback);
-        mItemTouchHelper.attachToRecyclerView(menulist);
+
         menulist.setAdapter(menuListAdapter);
     }
 
@@ -422,6 +469,7 @@ hold.setOnClickListener(new View.OnClickListener() {
         clear=(Button)v.findViewById(R.id.clear);
         subtotal = (TextView) v.findViewById(R.id.subtotal);
         tax = (TextView) v.findViewById(R.id.tax);
+        discount= (TextView) v.findViewById(R.id.discount);
         hold=(Button)v.findViewById(R.id.hold);
     }
 
@@ -577,7 +625,7 @@ hold.setOnClickListener(new View.OnClickListener() {
         total.setText("0.0");
         subtotal.setText("0.0");
         tax.setText("0.0");
-        total.setText("0.0");
+        discount.setText("0.0");
     }
 
 }

@@ -17,6 +17,12 @@
             android:inputType="number"
             android:layout_width="match_parent"
             android:layout_height="50dp" />
+        <EditText
+            android:id="@+id/discount"
+            android:hint="Enter Discount value"
+            android:inputType="number"
+            android:layout_width="match_parent"
+            android:layout_height="50dp" />
 
 
         <Button

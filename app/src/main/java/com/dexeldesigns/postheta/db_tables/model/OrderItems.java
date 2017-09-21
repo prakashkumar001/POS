@@ -26,6 +26,10 @@ public class OrderItems {
     public String void_quantity;
     public String information;
 
+    public String discountQtyapplyfor;
+    public String discountforparticularItems;
+    public boolean isoveralldiscountavailable;
+
     public String getInformation() {
         return information;
     }
@@ -34,165 +38,117 @@ public class OrderItems {
         this.information = information;
     }
 
-    private Long orderId;
-    @ToOne(joinProperty = "orderId")
-    private Orders order;
-    /** Used to resolve relations */
-    @Generated(hash = 2040040024)
-    private transient DaoSession daoSession;
-    /** Used for active entity operations. */
-    @Generated(hash = 871759418)
-    private transient OrderItemsDao myDao;
-    @Generated(hash = 219913283)
-    private transient Long order__resolvedKey;
-
-
-    public OrderItems(String product_id, String quantity, String price,
-                      String title, String imageUrl, String total_price_row, String status,String order_items_time) {
-        this.product_id = product_id;
-        this.quantity = quantity;
-        this.price = price;
-        this.title = title;
-        this.imageUrl = imageUrl;
-        this.total_price_row = total_price_row;
-        this.status = status;
-        this.order_items_time=order_items_time;
-
-    }
-
-
-    @Generated(hash = 656650667)
-    public OrderItems(Long id, String product_id, String quantity, String price, String title, String imageUrl,
-            String total_price_row, String status, String order_items_time, String void_quantity, String information,
-            Long orderId) {
-        this.id = id;
-        this.product_id = product_id;
-        this.quantity = quantity;
-        this.price = price;
-        this.title = title;
-        this.imageUrl = imageUrl;
-        this.total_price_row = total_price_row;
-        this.status = status;
-        this.order_items_time = order_items_time;
-        this.void_quantity = void_quantity;
-        this.information = information;
-        this.orderId = orderId;
-    }
-
-    @Generated(hash = 1757272169)
-    public OrderItems() {
-    }
-
-
     public Long getId() {
         return this.id;
     }
-
 
     public void setId(Long id) {
         this.id = id;
     }
 
-
     public String getProduct_id() {
         return this.product_id;
     }
-
 
     public void setProduct_id(String product_id) {
         this.product_id = product_id;
     }
 
-
     public String getQuantity() {
         return this.quantity;
     }
-
 
     public void setQuantity(String quantity) {
         this.quantity = quantity;
     }
 
-
     public String getPrice() {
         return this.price;
     }
-
 
     public void setPrice(String price) {
         this.price = price;
     }
 
-
     public String getTitle() {
         return this.title;
     }
-
 
     public void setTitle(String title) {
         this.title = title;
     }
 
-
     public String getImageUrl() {
         return this.imageUrl;
     }
-
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
 
-
     public String getTotal_price_row() {
         return this.total_price_row;
     }
-
 
     public void setTotal_price_row(String total_price_row) {
         this.total_price_row = total_price_row;
     }
 
-
     public String getStatus() {
         return this.status;
     }
-
 
     public void setStatus(String status) {
         this.status = status;
     }
 
-
     public String getOrder_items_time() {
         return this.order_items_time;
     }
-
 
     public void setOrder_items_time(String order_items_time) {
         this.order_items_time = order_items_time;
     }
 
-
     public String getVoid_quantity() {
         return this.void_quantity;
     }
-
 
     public void setVoid_quantity(String void_quantity) {
         this.void_quantity = void_quantity;
     }
 
+    public String getDiscountQtyapplyfor() {
+        return this.discountQtyapplyfor;
+    }
+
+    public void setDiscountQtyapplyfor(String discountQtyapplyfor) {
+        this.discountQtyapplyfor = discountQtyapplyfor;
+    }
+
+    public String getDiscountforparticularItems() {
+        return this.discountforparticularItems;
+    }
+
+    public void setDiscountforparticularItems(String discountforparticularItems) {
+        this.discountforparticularItems = discountforparticularItems;
+    }
+
+    public boolean getIsoveralldiscountavailable() {
+        return this.isoveralldiscountavailable;
+    }
+
+    public void setIsoveralldiscountavailable(boolean isoveralldiscountavailable) {
+        this.isoveralldiscountavailable = isoveralldiscountavailable;
+    }
 
     public Long getOrderId() {
         return this.orderId;
     }
 
-
     public void setOrderId(Long orderId) {
         this.orderId = orderId;
     }
-
 
     /** To-one relationship, resolved on first access. */
     @Generated(hash = 455849695)
@@ -213,7 +169,6 @@ public class OrderItems {
         return order;
     }
 
-
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 668355306)
     public void setOrder(Orders order) {
@@ -223,7 +178,6 @@ public class OrderItems {
             order__resolvedKey = orderId;
         }
     }
-
 
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
@@ -237,7 +191,6 @@ public class OrderItems {
         myDao.delete(this);
     }
 
-
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
      * Entity must attached to an entity context.
@@ -249,7 +202,6 @@ public class OrderItems {
         }
         myDao.refresh(this);
     }
-
 
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
@@ -263,13 +215,73 @@ public class OrderItems {
         myDao.update(this);
     }
 
-
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 1923971465)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getOrderItemsDao() : null;
     }
+
+    private Long orderId;
+    @ToOne(joinProperty = "orderId")
+    private Orders order;
+    /** Used to resolve relations */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
+    /** Used for active entity operations. */
+    @Generated(hash = 871759418)
+    private transient OrderItemsDao myDao;
+
+    @Generated(hash = 1139268171)
+    public OrderItems(Long id, String product_id, String quantity, String price,
+            String title, String imageUrl, String total_price_row, String status,
+            String order_items_time, String void_quantity, String information,
+            String discountQtyapplyfor, String discountforparticularItems,
+            boolean isoveralldiscountavailable, Long orderId) {
+        this.id = id;
+        this.product_id = product_id;
+        this.quantity = quantity;
+        this.price = price;
+        this.title = title;
+        this.imageUrl = imageUrl;
+        this.total_price_row = total_price_row;
+        this.status = status;
+        this.order_items_time = order_items_time;
+        this.void_quantity = void_quantity;
+        this.information = information;
+        this.discountQtyapplyfor = discountQtyapplyfor;
+        this.discountforparticularItems = discountforparticularItems;
+        this.isoveralldiscountavailable = isoveralldiscountavailable;
+        this.orderId = orderId;
+    }
+
+    @Generated(hash = 1757272169)
+    public OrderItems() {
+    }
+
+    public OrderItems(String product_id, String quantity, String price,
+                      String title, String imageUrl, String total_price_row, String status,
+                      String order_items_time,
+                      String discountQtyapplyfor, String discountforparticularItems,
+                      boolean isoveralldiscountavailable) {
+        this.product_id = product_id;
+        this.quantity = quantity;
+        this.price = price;
+        this.title = title;
+        this.imageUrl = imageUrl;
+        this.total_price_row = total_price_row;
+        this.status = status;
+        this.order_items_time = order_items_time;
+        this.discountQtyapplyfor = discountQtyapplyfor;
+        this.discountforparticularItems = discountforparticularItems;
+        this.isoveralldiscountavailable = isoveralldiscountavailable;
+
+    }
+
+
+    @Generated(hash = 219913283)
+    private transient Long order__resolvedKey;
+
 
 
 }

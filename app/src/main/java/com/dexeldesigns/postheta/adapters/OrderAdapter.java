@@ -22,6 +22,7 @@ import com.dexeldesigns.postheta.Utils.OrderTotal;
 import com.dexeldesigns.postheta.common.GlobalClass;
 import com.dexeldesigns.postheta.db_tables.model.OrderItems;
 import com.dexeldesigns.postheta.db_tables.model.Orders;
+import com.dexeldesigns.postheta.db_tables.model.SubCategories;
 import com.dexeldesigns.postheta.fragments.Home;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -224,6 +225,8 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.MyViewHolder
 
                     order.get(positions).setQuantity(qty);
                     totalprice=Double.parseDouble(qty)*Double.parseDouble(order.get(positions).getPrice());
+                   double discount= calculateDiscountForItem(order.get(positions));
+                    totalprice=totalprice+discount;
                     order.get(positions).setTotal_price_row(String.valueOf(totalprice));
                     // global.orders.get(String.valueOf(mainposition+1)).get(position).setInformation(information);
                     Home.recyclerAdapter1 = new OrderAdapter(context);
@@ -364,6 +367,22 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.MyViewHolder
 
 
         dialog.show();
+    }
+    public double calculateDiscountForItem(OrderItems product)
+    {
+        Double discount_amount=0.0 ;
+
+        if(Double.parseDouble(product.quantity)>=Double.parseDouble(product.discountQtyapplyfor))
+        {
+            double price=Double.parseDouble(product.quantity)*Double.parseDouble(product.price);
+            discount_amount=price*(Double.parseDouble(product.discountforparticularItems)/100);
+
+        }else
+        {
+
+        }
+
+        return discount_amount;
     }
 
 }

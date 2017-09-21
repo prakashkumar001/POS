@@ -157,7 +157,7 @@ public class SplitFragment extends Fragment {
                 String qty = quants.getText().toString();
                 double menu_quants = Double.parseDouble(quantity) - Double.parseDouble(qty);
                 double total_row_prices = Double.parseDouble(qty) * Double.parseDouble(menu.getPrice());
-                OrderItems m = new OrderItems(menu.getProduct_id(), String.valueOf(qty) , menu.getPrice(),menu.getTitle(), menu.getImageUrl(), String.valueOf(total_row_prices),menu.getStatus(), menu.getOrder_items_time());
+                OrderItems m = new OrderItems(menu.getProduct_id(), String.valueOf(qty) , menu.getPrice(),menu.getTitle(), menu.getImageUrl(), String.valueOf(total_row_prices),menu.getStatus(), menu.getOrder_items_time(),menu.discountQtyapplyfor,menu.discountforparticularItems,menu.isoveralldiscountavailable);
 
                 if(containsProduct(checklistdata,menu.product_id))
                 {
@@ -270,7 +270,7 @@ public class SplitFragment extends Fragment {
                     String qty = quants.getText().toString();
                     double menu_quants = Double.parseDouble(quantity) - Double.parseDouble(qty);
                     double total_row_prices = Double.parseDouble(qty) * Double.parseDouble(splitmenu.getPrice());
-                    OrderItems m = new OrderItems(splitmenu.getProduct_id(), String.valueOf(qty) , splitmenu.getPrice(),splitmenu.getTitle(), splitmenu.getImageUrl(), String.valueOf(total_row_prices),splitmenu.getStatus(), splitmenu.getOrder_items_time());
+                    OrderItems m = new OrderItems(splitmenu.getProduct_id(), String.valueOf(qty) , splitmenu.getPrice(),splitmenu.getTitle(), splitmenu.getImageUrl(), String.valueOf(total_row_prices),splitmenu.getStatus(), splitmenu.getOrder_items_time(),menu.discountQtyapplyfor,menu.discountforparticularItems,menu.isoveralldiscountavailable);
                     if(containsProduct(order,splitmenu.product_id))
                     {
 

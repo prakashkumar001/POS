@@ -20,6 +20,7 @@ import com.dexeldesigns.postheta.Utils.OrderTotal;
 import com.dexeldesigns.postheta.common.GlobalClass;
 import com.dexeldesigns.postheta.db_tables.model.OrderItems;
 import com.dexeldesigns.postheta.db_tables.model.Product;
+import com.dexeldesigns.postheta.db_tables.model.SubCategories;
 import com.dexeldesigns.postheta.fragments.Home;
 import com.dexeldesigns.postheta.helper.ItemTouchHelperAdapter;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -33,17 +34,17 @@ import java.util.List;
 import static com.dexeldesigns.postheta.helper.Helper.getHelper;
 
 
-public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.MyViewHolder> implements ItemTouchHelperAdapter {
+public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.MyViewHolder>  {
 
     ImageLoader loader;
     GlobalClass global;
     Activity context;
     double d;
     double totalvalue = 0.0;
-    private List<Product> moviesList=new ArrayList<>();
+    private List<SubCategories> moviesList=new ArrayList<>();
 
 
-    public ProductListAdapter(Activity context, List<Product> moviesList) {
+    public ProductListAdapter(Activity context, List<SubCategories> moviesList) {
         loader = ImageLoader.getInstance();
 
         this.moviesList = moviesList;
@@ -83,23 +84,29 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
             public void onClick(View v) {
                 if (global.orders.containsKey(global.TableNo)) {
 
-                    if(containsProduct(global.orders.get(global.TableNo),moviesList.get(position).getProduct_id()))
+                    if(containsProduct(global.orders.get(global.TableNo),moviesList.get(position).getSubCategoryId()))
                     {
                         Toast.makeText(context,"Already Added",Toast.LENGTH_SHORT).show();
                     }else
                     {
-                        global.orders.get(global.TableNo).add(new OrderItems(moviesList.get(position).product_id, moviesList.get(position).quantity, moviesList.get(position).price, moviesList.get(position).title, moviesList.get(position).imageUrl, moviesList.get(position).totalPricerow,"",new Date().toString()));
+                        global.orders.get(global.TableNo).add(new OrderItems(moviesList.get(position).getSubCategoryId(), moviesList.get(position).quantity, moviesList.get(position).price, moviesList.get(position).title, moviesList.get(position).imageUrl, moviesList.get(position).totalPricerow,"",new Date().toString(),moviesList.get(position).discountQtyapplyfor,moviesList.get(position).discountforparticularItems,moviesList.get(position).isoveralldiscountavailable));
 
                     }
 
 
 
                 } else {
+                   double discount=  calculateDiscountForItem(moviesList.get(position));
 
-                    global.orders.get("0").add(new OrderItems(moviesList.get(position).product_id, moviesList.get(position).quantity, moviesList.get(position).price, moviesList.get(position).title, moviesList.get(position).imageUrl, moviesList.get(position).totalPricerow,"",new Date().toString()));
+                    double totalprice=discount+Double.parseDouble(moviesList.get(position).totalPricerow);
+
+                    global.orders.get("0").add(new OrderItems(moviesList.get(position).getSubCategoryId(), moviesList.get(position).quantity, moviesList.get(position).price, moviesList.get(position).title, moviesList.get(position).imageUrl, String.valueOf(totalprice),"",new Date().toString(),moviesList.get(position).discountQtyapplyfor,moviesList.get(position).discountforparticularItems,moviesList.get(position).isoveralldiscountavailable));
 
 
                 }
+
+                Toast.makeText(context,moviesList.get(position).getCategory_id().toString(),Toast.LENGTH_SHORT).show();
+
                 orderDetail();
             }
         });
@@ -115,16 +122,7 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
         return moviesList.size();
     }
 
-    @Override
-    public void onItemMove(int fromPosition, int toPosition) {
-        Collections.swap(moviesList, fromPosition, toPosition);
-        notifyItemMoved(fromPosition, toPosition);
-        notifyItemChanged(fromPosition);
-        notifyItemChanged(toPosition);
-        getHelper().getDaoSession().deleteAll(Product.class);
 
-        loadProductItems();
-    }
 
 
 
@@ -169,14 +167,21 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
 
         return false;
     }
-    void loadProductItems()
-    {
-        for (int i = 0; i < moviesList.size(); i++) {
-            getHelper().insertOrUpdateProduct(moviesList.get(i));
-            moviesList.get(i).setId(Long.parseLong(String.valueOf(i)));
 
+    public double calculateDiscountForItem(SubCategories product)
+    {
+        Double discount_amount=0.0 ;
+
+        if(product.discountQtyapplyfor.equalsIgnoreCase(product.quantity))
+        {
+             discount_amount=Double.parseDouble(product.price)*(Double.parseDouble(product.discountforparticularItems)/100);
+
+        }else
+        {
 
         }
 
+        return discount_amount;
     }
+
 }
