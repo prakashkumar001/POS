@@ -45,6 +45,8 @@ public class Orders {
 
     private boolean isHold;
 
+    private String discount;
+
     /** Used to resolve relations */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
@@ -53,11 +55,11 @@ public class Orders {
     @Generated(hash = 1717339351)
     private transient OrdersDao myDao;
 
-    @Generated(hash = 1579774860)
-    public Orders(Long id, String subTotal, String Total, String orderTime,
-            String orderStatus, String Table_no, String TakeAwayno,
-            String orderType, String payment_status, String gst_amount,
-            boolean isSync, boolean isContainsvoid, boolean isHold) {
+    @Generated(hash = 2090816863)
+    public Orders(Long id, String subTotal, String Total, String orderTime, String orderStatus,
+            String Table_no, String TakeAwayno, String orderType, String payment_status,
+            String gst_amount, boolean isSync, boolean isContainsvoid, boolean isHold,
+            String discount) {
         this.id = id;
         this.subTotal = subTotal;
         this.Total = Total;
@@ -71,6 +73,7 @@ public class Orders {
         this.isSync = isSync;
         this.isContainsvoid = isContainsvoid;
         this.isHold = isHold;
+        this.discount = discount;
     }
 
     @Generated(hash = 1753857294)
@@ -243,6 +246,14 @@ public class Orders {
             throw new DaoException("Entity is detached from DAO context");
         }
         myDao.update(this);
+    }
+
+    public String getDiscount() {
+        return this.discount;
+    }
+
+    public void setDiscount(String discount) {
+        this.discount = discount;
     }
 
     /** called by internal mechanisms, do not call yourself. */

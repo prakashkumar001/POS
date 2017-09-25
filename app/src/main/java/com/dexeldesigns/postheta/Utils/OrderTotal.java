@@ -38,21 +38,21 @@ public class OrderTotal {
 
                 for(int k=0;k<globalClass.orders.get(globalClass.TableNo).size();k++)
                 {
-
+/*
                     if(globalClass.orders.get(globalClass.TableNo).get(k).getIsoveralldiscountavailable()==true)
-                    {
+                    {*/
                         String total=globalClass.orders.get(globalClass.TableNo).get(k).getTotal_price_row();
                         d=d+Double.parseDouble(total);
-                    }else
+                   /* }else
                     {
                         String totals=globalClass.orders.get(globalClass.TableNo).get(k).getTotal_price_row();
                         d1=d1+Double.parseDouble(totals);
-                    }
+                    }*/
 
 
                 }
             totalvalue=d;
-            totalvaluewithoutdiscount=d1;
+            totalvaluewithoutdiscount=d;
 
         }
 
@@ -87,7 +87,6 @@ public class OrderTotal {
 
                 Double total=totalvalue+gstamount-discount_amount;
 
-                total=total+totalvaluewithoutdiscount;
 
                 Home.total.setText(String.format("%.2f", total));
             }else

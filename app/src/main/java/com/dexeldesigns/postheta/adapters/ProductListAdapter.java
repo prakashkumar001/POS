@@ -82,32 +82,76 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (global.orders.containsKey(global.TableNo)) {
 
-                    if(containsProduct(global.orders.get(global.TableNo),moviesList.get(position).getSubCategoryId()))
+                if(global.orderid!=null)
+                {
+                    if(getHelper().getOrderById(global.orderid).getPayment_status().equalsIgnoreCase("Paid"))
                     {
-                        Toast.makeText(context,"Already Added",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context,"Please generate a new order",Toast.LENGTH_SHORT).show();
+
                     }else
                     {
-                        global.orders.get(global.TableNo).add(new OrderItems(moviesList.get(position).getSubCategoryId(), moviesList.get(position).quantity, moviesList.get(position).price, moviesList.get(position).title, moviesList.get(position).imageUrl, moviesList.get(position).totalPricerow,"",new Date().toString(),moviesList.get(position).discountQtyapplyfor,moviesList.get(position).discountforparticularItems,moviesList.get(position).isoveralldiscountavailable));
+                        if (global.orders.containsKey(global.TableNo)) {
+
+                            if(containsProduct(global.orders.get(global.TableNo),moviesList.get(position).getSubCategoryId()))
+                            {
+                                Toast.makeText(context,"Already Added",Toast.LENGTH_SHORT).show();
+                            }else
+                            {
+                                global.orders.get(global.TableNo).add(new OrderItems(moviesList.get(position).getSubCategoryId(), moviesList.get(position).quantity, moviesList.get(position).price, moviesList.get(position).title, moviesList.get(position).imageUrl, moviesList.get(position).totalPricerow,"",new Date().toString(),moviesList.get(position).discountQtyapplyfor,moviesList.get(position).discountforparticularItems,moviesList.get(position).isoveralldiscountavailable));
+
+                            }
+
+
+
+                        } else {
+                            double discount=  calculateDiscountForItem(moviesList.get(position));
+
+                            double totalprice=discount+Double.parseDouble(moviesList.get(position).totalPricerow);
+
+                            global.orders.get("0").add(new OrderItems(moviesList.get(position).getSubCategoryId(), moviesList.get(position).quantity, moviesList.get(position).price, moviesList.get(position).title, moviesList.get(position).imageUrl, String.valueOf(totalprice),"",new Date().toString(),moviesList.get(position).discountQtyapplyfor,moviesList.get(position).discountforparticularItems,moviesList.get(position).isoveralldiscountavailable));
+
+
+                        }
+
+                        Toast.makeText(context,moviesList.get(position).getCategory_id().toString(),Toast.LENGTH_SHORT).show();
+
+                        orderDetail();
+                    }
+                }else
+                {
+                    if (global.orders.containsKey(global.TableNo)) {
+
+                        if(containsProduct(global.orders.get(global.TableNo),moviesList.get(position).getSubCategoryId()))
+                        {
+                            Toast.makeText(context,"Already Added",Toast.LENGTH_SHORT).show();
+                        }else
+                        {
+                            global.orders.get(global.TableNo).add(new OrderItems(moviesList.get(position).getSubCategoryId(), moviesList.get(position).quantity, moviesList.get(position).price, moviesList.get(position).title, moviesList.get(position).imageUrl, moviesList.get(position).totalPricerow,"",new Date().toString(),moviesList.get(position).discountQtyapplyfor,moviesList.get(position).discountforparticularItems,moviesList.get(position).isoveralldiscountavailable));
+
+                        }
+
+
+
+                    } else {
+                        double discount=  calculateDiscountForItem(moviesList.get(position));
+
+                        double totalprice=discount+Double.parseDouble(moviesList.get(position).totalPricerow);
+
+                        global.orders.get("0").add(new OrderItems(moviesList.get(position).getSubCategoryId(), moviesList.get(position).quantity, moviesList.get(position).price, moviesList.get(position).title, moviesList.get(position).imageUrl, String.valueOf(totalprice),"",new Date().toString(),moviesList.get(position).discountQtyapplyfor,moviesList.get(position).discountforparticularItems,moviesList.get(position).isoveralldiscountavailable));
+
 
                     }
 
+                    Toast.makeText(context,moviesList.get(position).getCategory_id().toString(),Toast.LENGTH_SHORT).show();
 
-
-                } else {
-                   double discount=  calculateDiscountForItem(moviesList.get(position));
-
-                    double totalprice=discount+Double.parseDouble(moviesList.get(position).totalPricerow);
-
-                    global.orders.get("0").add(new OrderItems(moviesList.get(position).getSubCategoryId(), moviesList.get(position).quantity, moviesList.get(position).price, moviesList.get(position).title, moviesList.get(position).imageUrl, String.valueOf(totalprice),"",new Date().toString(),moviesList.get(position).discountQtyapplyfor,moviesList.get(position).discountforparticularItems,moviesList.get(position).isoveralldiscountavailable));
-
-
+                    orderDetail();
                 }
 
-                Toast.makeText(context,moviesList.get(position).getCategory_id().toString(),Toast.LENGTH_SHORT).show();
 
-                orderDetail();
+
+
+
             }
         });
 

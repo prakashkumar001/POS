@@ -42,6 +42,7 @@ import com.dexeldesigns.postheta.db_tables.model.Orders;
 import com.dexeldesigns.postheta.db_tables.model.Product;
 import com.dexeldesigns.postheta.db_tables.model.SubCategories;
 import com.dexeldesigns.postheta.helper.SimpleItemTouchHelperCallback;
+import com.dexeldesigns.postheta.model.Tables;
 import com.dexeldesigns.postheta.payment.PaymentFragment;
 import com.dexeldesigns.postheta.splitbill.SplitFragment;
 
@@ -75,10 +76,11 @@ public class Home extends Fragment {
     private ItemTouchHelper mItemTouchHelper;
     public static ProductListAdapter productListAdapter;
     Orders orders;
+    int index=-1;
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.dashboard, container, false);
         global = new GlobalClass();
@@ -151,7 +153,7 @@ hold.setOnClickListener(new View.OnClickListener() {
 
         if(global.orderid!=null)
         {
-            if( getHelper().getOrderById(global.orderid).getPayment_status()!=null)
+            if( getHelper().getOrderById(global.orderid).getPayment_status()==null)
             {
                 Toast.makeText(getActivity(),"This order wont be hold",Toast.LENGTH_SHORT).show();
             }else if(getHelper().getOrderById(global.orderid).getIsHold()==true) {
@@ -262,6 +264,7 @@ hold.setOnClickListener(new View.OnClickListener() {
 
                     orders.setGst_amount(tax.getText().toString());
                     orders.setSubTotal(subtotal.getText().toString());
+                    orders.setPayment_status("Un Paid");
                     orders.setTotal(total.getText().toString());
                     orders.setIsHold(false);
 
@@ -329,16 +332,26 @@ hold.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if(global.orderid!=null)
                 {
-                    if(getHelper().getOrderById(global.orderid).getPayment_status()!=null)
+                    if(getHelper().getOrderById(global.orderid).getPayment_status()!=null && !getHelper().getOrderById(global.orderid).getPayment_status().equalsIgnoreCase("Un Paid"))
                     {
                         Toast.makeText(getActivity(),"Already Paid ",Toast.LENGTH_SHORT).show();
                     }else {
+
+
+                        if(containsTable(global.select_tables,global.TableNo))
+                        {
+                           global.select_tables.remove(index);
+                            index=-1;
+                        }
+
                         PaymentFragment fragment = new PaymentFragment();
                         Bundle bundle = new Bundle();
                         bundle.putString("Totalpayment", total.getText().toString()); // Put anything what you want
                         bundle.putString("orderid",String.valueOf(global.orderid));
                         fragment.setArguments(bundle);
                         loadFragment(fragment);
+
+
 
                     }
                 }else
@@ -595,6 +608,11 @@ hold.setOnClickListener(new View.OnClickListener() {
         if (global.orders.containsKey(global.TableNo)) {
 
 
+
+
+
+
+
             recyclerAdapter1 = new OrderAdapter(getActivity());
             LinearLayoutManager ll = new LinearLayoutManager(getActivity());
             ll.setOrientation(LinearLayoutManager.VERTICAL);
@@ -626,6 +644,19 @@ hold.setOnClickListener(new View.OnClickListener() {
         subtotal.setText("0.0");
         tax.setText("0.0");
         discount.setText("0.0");
+    }
+
+
+    boolean containsTable(List<Tables> list, String tableNo) {
+        for (Tables item : list) {
+            if (item.table_num.equals(tableNo)) {
+
+                index=list.indexOf(item);
+                return true;
+            }
+        }
+
+        return false;
     }
 
 }
