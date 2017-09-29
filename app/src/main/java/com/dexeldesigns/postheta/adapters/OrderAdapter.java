@@ -275,6 +275,8 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.MyViewHolder
                                orderItems.setStatus("void");
                                orderItems.setQuantity(String.valueOf(update_quantity));
                                orderItems.setVoid_quantity(String.valueOf(void_quantity));
+                               double updatetotal=Double.parseDouble(orderItems.getQuantity())*Double.parseDouble(orderItems.getPrice());
+                               orderItems.setTotal_price_row(String.valueOf(updatetotal));
                                getHelper().getDaoSession().update(orderItems);
                                orderbyid.setIsContainsvoid(true);
                                getHelper().getDaoSession().update(orderbyid);

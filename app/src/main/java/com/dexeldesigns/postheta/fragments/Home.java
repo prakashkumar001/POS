@@ -506,31 +506,6 @@ hold.setOnClickListener(new View.OnClickListener() {
             }
         }
 
-       /* for(int i=0;i<getHelper().getMenuItems().size();i++)
-        {
-
-
-        }
-*/
-
-
-
-
-
-            // subCategories.get(i).setId(Long.parseLong(String.valueOf(i)));
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         if (getHelper().getMenuItems().size() > 0) {
             List<Categories> datas = new ArrayList<>();
@@ -885,17 +860,7 @@ hold.setOnClickListener(new View.OnClickListener() {
 
     }
 
-     public  void resetPrint() {
-         try{
-             outputStream.write(PrinterCommands.ESC_FONT_COLOR_DEFAULT);
-             outputStream.write(PrinterCommands.FS_FONT_ALIGN);
-             outputStream.write(PrinterCommands.ESC_ALIGN_LEFT);
-             outputStream.write(PrinterCommands.ESC_CANCEL_BOLD);
-             outputStream.write(PrinterCommands.LF);
-         } catch (IOException e) {
-             e.printStackTrace();
-         }
-     }
+
     //print text
     private void printText(String msg) {
         try {
@@ -980,7 +945,7 @@ hold.setOnClickListener(new View.OnClickListener() {
             public void run() {
                 try {
                     ESCPOSDriver escposDriver = new ESCPOSDriver();
-
+                    Orders orders1=getHelper().getOrderById(global.orderid);
                     OutputStream os = mBluetoothSocket
                             .getOutputStream();
                     outputStream=new BufferedOutputStream(os);
@@ -993,11 +958,21 @@ hold.setOnClickListener(new View.OnClickListener() {
                     printCustom("Hot Line: +88000 000000",0,1);
                     printNewLine();
 
+                    if(orders1.getTable_no()!=null)
+                    {
+                        escposDriver.printLineAlignLeft(outputStream,String.valueOf("   Table.No :"+orders1.getTable_no()));
+                        printNewLine();
+                    }
+
+
+                    escposDriver.printLineAlignLeft(outputStream,String.valueOf("   ORD_NO-0000"+orders1.getId()));
+                    printNewLine();
+
                     escposDriver.printLineAlignLeft(outputStream, "   Qty."+" "+"Item                             "+"Price");
                     escposDriver.printLineAlignRight(outputStream, "  Total   ");
                     //printUnicode();
 
-                    Orders orders1=getHelper().getOrderById(global.orderid);
+
                     for(int i=0;i<orders1.getOrderItems().size();i++)
                     {
                         OrderItems item=orders1.getOrderItems().get(i);
@@ -1030,6 +1005,13 @@ hold.setOnClickListener(new View.OnClickListener() {
                         escposDriver.printLineAlignRight(outputStream, totalpricerow);
 
                     }
+
+
+                    if(orders1.getIsContainsvoid())
+                    {
+                        voidPrint(orders1,escposDriver);
+                    }
+
 
 
 
@@ -1103,66 +1085,52 @@ hold.setOnClickListener(new View.OnClickListener() {
         }
     }
 
-    private void sendDataToPrinter() {
-        try {
-            ESCPOSDriver escposDriver = new ESCPOSDriver();
 
-            String msgLeft = "  10 X Fusion Spring roll Kebab chicken";
-            //msgLeft += "\n";
-            String msgCenter = "10.25";
-            // msgCenter += "\n";
-            String msgRight = "100.10";
 
-            if(msgLeft.length()<40)
+    public void voidPrint(Orders orders, ESCPOSDriver escposDriver)
+    {
+       printNewLine();
+        escposDriver.printLineAlignCenter(outputStream,"Void Items");
+        printNewLine();
+        for(int i=0;i<orders.getOrderItems().size();i++)
+        {
+            OrderItems item=orders.getOrderItems().get(i);
+
+            if(item.getVoid_quantity()!=null)
             {
-                int addspace=40-msgLeft.length();
-                String space=" ";
-                for(int i=0;i<addspace-1;i++)
-                {
+                String msg= "   "+item.getVoid_quantity()+" "+item.getTitle();
+                String eachprice=item.getPrice();
+                double updateprice=Double.parseDouble(item.getVoid_quantity())*Double.parseDouble(item.getPrice());
+                String totalpricerow=updateprice+"   ";
+                //printText(leftRightAlign(msg, item.getTotal_price_row()));
+                       /* outputStream.write(PrinterCommands.ESC_ALIGN_LEFT);
+                        outputStream.write(msg.getBytes());
+                        outputStream.write(PrinterCommands.ESC_ALIGN_CENTER);
+                        outputStream.write(item.getPrice().getBytes());
+                        outputStream.write(PrinterCommands.ESC_ALIGN_RIGHT);
+                        String totalrow=item.getTotal_price_row()+"   ";
+                        outputStream.write(totalrow.getBytes());
+                        outputStream.write(PrinterCommands.LF);*/
 
-                    space=" "+space;
+                if(msg.length()<40)
+                {
+                    int addspace=40-msg.length();
+                    String space=" ";
+                    for(int k=0;k<addspace;k++)
+                    {
+
+                        space=" "+space;
+                    }
+                    eachprice=space+eachprice;
                 }
-                msgCenter=space+msgCenter;
+                escposDriver.printLineAlignLeft(outputStream, msg);
+                escposDriver.printLineAlignLeft(outputStream, eachprice);
+                escposDriver.printLineAlignRight(outputStream, totalpricerow);
+
+
             }
 
-            escposDriver.printLineAlignLeft(outputStream, msgLeft);
-            escposDriver.printLineAlignLeft(outputStream, msgCenter);
-            escposDriver.printLineAlignRight(outputStream, msgRight);
-
-
-
-
-
-
-            String msgLeft1 = "  1 X Fusion ";
-            //msgLeft += "\n";
-            String msgCenter1 = "1.25";
-            // msgCenter += "\n";
-            String msgRight1 = "1.10";
-
-            if(msgLeft1.length()<40)
-            {
-                int addspace=40-msgLeft1.length();
-                String space=" ";
-                for(int i=0;i<addspace-1;i++)
-                {
-
-                    space=" "+space;
-                }
-                msgCenter1=space+msgCenter1;
-            }
-
-            escposDriver.printLineAlignLeft(outputStream, msgLeft1);
-            escposDriver.printLineAlignLeft(outputStream, msgCenter1);
-            escposDriver.printLineAlignRight(outputStream, msgRight1);
-
-            escposDriver.flushCommand(outputStream);
-
-            outputStream.flush();
-
-           // Snackbar.make(mCoordinatorLayout, "Data sent", Snackbar.LENGTH_SHORT).show();
-        } catch (Exception e) {
-            Log.e("", e.getMessage(), e);
         }
+
     }
 }
