@@ -37,6 +37,7 @@ public class GlobalClass extends Application {
     public static String mOrderType="Quick Order";
     //dummy data need to clear after demo
     public static ArrayList<Order_Detail> order_details=new ArrayList<>();
+    public static String bluetoothStatus=null;
 
     public static String tax="18";
 
