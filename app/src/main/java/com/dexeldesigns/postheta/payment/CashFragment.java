@@ -3,6 +3,8 @@ package com.dexeldesigns.postheta.payment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,9 +14,13 @@ import android.widget.Toast;
 
 import com.dexeldesigns.postheta.MainActivity;
 import com.dexeldesigns.postheta.R;
+import com.dexeldesigns.postheta.bluetooth.utils.ESCPOSDriver;
+import com.dexeldesigns.postheta.db_tables.model.OrderItems;
 import com.dexeldesigns.postheta.db_tables.model.Orders;
 import com.dexeldesigns.postheta.fragments.Home;
 
+import java.io.BufferedOutputStream;
+import java.io.OutputStream;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 
@@ -172,8 +178,6 @@ public class CashFragment extends Fragment implements View.OnClickListener {
         order.setPayment_status("Paid");
         getHelper().getDaoSession().update(order);
 
-
-
         ((MainActivity) getActivity()).logout();
     }
 
@@ -249,6 +253,8 @@ public class CashFragment extends Fragment implements View.OnClickListener {
 
 
     }
+
+
 
 
 }

@@ -12,8 +12,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -27,7 +25,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.dexeldesigns.postheta.adapters.OrderDetailsAdapter;
 import com.dexeldesigns.postheta.common.GlobalClass;
 import com.dexeldesigns.postheta.db_tables.model.Break;
 import com.dexeldesigns.postheta.db_tables.model.Clock;
@@ -53,7 +50,7 @@ import static com.dexeldesigns.postheta.helper.Helper.getHelper;
  * Created by Creative IT Works on 11-Jul-17.
  */
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity  {
     TabLayout tabLayoutHeader;
     TextView table_no, clock_in_time, clock_in_Timer;
     Timer timer;
@@ -652,5 +649,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode,resultCode,data);
+
+
     }
+
+
+
 }

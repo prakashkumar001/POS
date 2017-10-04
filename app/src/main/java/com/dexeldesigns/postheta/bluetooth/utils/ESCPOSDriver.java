@@ -15,9 +15,9 @@ public class ESCPOSDriver {
     private static final byte[] LINE_FEED = {0x0A};
     private static final byte[] PAPER_FEED = {27, 0x4A, (byte)0xFF};
     public static final byte[] PAPER_CUT = {0x1D, 0x56, 0x1};
-    private static final byte[] ALIGN_LEFT = {0x1B, 0x61, 0};
-    private static final byte[] ALIGN_CENTER = {0x1B, 0x61, 1};
-    private static final byte[] ALIGN_RIGHT = {0x1B, 0x61, 2};
+    public static final byte[] ALIGN_LEFT = {0x1B, 0x61, 0};
+    public static final byte[] ALIGN_CENTER = {0x1B, 0x61, 1};
+    public static final byte[] ALIGN_RIGHT = {0x1B, 0x61, 2};
     private static final byte[] BOLD_ON = {0x1B, 0x45, 1};
     private static final byte[] BOLD_OFF = {0x1B, 0x45, 0};
     private static final byte[] INIT = {0x1B, 0x40};
@@ -37,7 +37,7 @@ public class ESCPOSDriver {
     public void printLineAlignLeft(BufferedOutputStream bufferedOutputStream, String lineData) {
         try {
             bufferedOutputStream.write(ALIGN_LEFT);
-            bufferedOutputStream.write(lineData.getBytes());
+           bufferedOutputStream.write(lineData.getBytes());
            // bufferedOutputStream.write(LINE_FEED);
         } catch (IOException e) {
             Log.e(tag, e.getMessage(), e);
@@ -58,8 +58,8 @@ public class ESCPOSDriver {
         try {
             bufferedOutputStream.write(ALIGN_RIGHT);
             bufferedOutputStream.write(lineData.getBytes());
-            bufferedOutputStream.write(ESCPOSDriver.LINE_FEED);
-            //bufferedOutputStream.write(LINE_FEED);
+           // bufferedOutputStream.write(ESCPOSDriver.LINE_FEED);
+            bufferedOutputStream.write(LINE_FEED);
         } catch (IOException e) {
             Log.e(tag, e.getMessage(), e);
         }

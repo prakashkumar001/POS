@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothHeadset;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -59,6 +60,7 @@ import com.dexeldesigns.postheta.db_tables.model.OrderItems;
 import com.dexeldesigns.postheta.db_tables.model.Orders;
 import com.dexeldesigns.postheta.db_tables.model.Product;
 import com.dexeldesigns.postheta.db_tables.model.SubCategories;
+import com.dexeldesigns.postheta.db_tables.model.TableDetail;
 import com.dexeldesigns.postheta.helper.SimpleItemTouchHelperCallback;
 import com.dexeldesigns.postheta.model.Tables;
 import com.dexeldesigns.postheta.payment.PaymentFragment;
@@ -188,11 +190,22 @@ public class Home extends Fragment implements Runnable {
 
         //for bluetooth
         if(bluetoothStatus!=null)
-        {mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-            mBluetoothDevice = mBluetoothAdapter
-                    .getRemoteDevice(bluetoothStatus);
-            Thread mBlutoothConnectThread = new Thread(this);
-            mBlutoothConnectThread.start();
+        {
+            if(isBluetoothConnected())
+            {
+                mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+                mBluetoothDevice = mBluetoothAdapter
+                        .getRemoteDevice(bluetoothStatus);
+                Thread mBlutoothConnectThread = new Thread(this);
+                mBlutoothConnectThread.start();
+
+
+            }else
+            {
+
+               bluetoothStatus=null;
+
+            }
 
 
 
@@ -206,7 +219,7 @@ hold.setOnClickListener(new View.OnClickListener() {
 
         if(global.orderid!=null)
         {
-            if( getHelper().getOrderById(global.orderid).getPayment_status()==null)
+            if( getHelper().getOrderById(global.orderid).getPayment_status()==null || getHelper().getOrderById(global.orderid).getPayment_status().equalsIgnoreCase("Paid"))
             {
                 Toast.makeText(getActivity(),"This order wont be hold",Toast.LENGTH_SHORT).show();
             }else if(getHelper().getOrderById(global.orderid).getIsHold()==true) {
@@ -262,10 +275,84 @@ hold.setOnClickListener(new View.OnClickListener() {
 
 
                 if (global.orderid != null) {
-                    for (int i = 0; i < global.orders.get(global.TableNo).size(); i++) {
-                        if (global.orders.get(global.TableNo).get(i).getStatus().equalsIgnoreCase("")) {
 
-                            Log.i("ORDER_ID", "ORDER_ID" + global.orderid);
+                    if(containsnewItems(global.orders.get(global.TableNo)))
+                    {
+                        for (int i = 0; i < global.orders.get(global.TableNo).size(); i++) {
+                            if (global.orders.get(global.TableNo).get(i).getStatus().equalsIgnoreCase("")) {
+
+                                Log.i("ORDER_ID", "ORDER_ID" + global.orderid);
+                                OrderItems order = new OrderItems();
+                                global.orders.get(global.TableNo).get(i).setStatus("Kitchen");
+                                order.setProduct_id(global.orders.get(global.TableNo).get(i).getProduct_id());
+                                order.setTitle(global.orders.get(global.TableNo).get(i).getTitle());
+                                order.setImageUrl(global.orders.get(global.TableNo).get(i).getImageUrl());
+                                order.setQuantity(global.orders.get(global.TableNo).get(i).getQuantity());
+                                order.setPrice(global.orders.get(global.TableNo).get(i).getPrice());
+                                order.setTotal_price_row(global.orders.get(global.TableNo).get(i).getTotal_price_row());
+                                order.setStatus(global.orders.get(global.TableNo).get(i).getStatus());
+                                order.setOrderId(global.orderid);
+                                Long id = getHelper().getDaoSession().insert(order);
+                                order.setId(id);
+
+
+                            }
+                        }
+
+
+                        Orders orders1=getHelper().getOrderById(global.orderid);
+                        orders1.setGst_amount(tax.getText().toString());
+                        orders1.setSubTotal(subtotal.getText().toString());
+                        orders1.setTotal(total.getText().toString());
+                        getHelper().getDaoSession().update(orders1);
+
+                        global.orderid=null;
+                        global.TableNo="0";
+
+                        Toast.makeText(getActivity(), "Order Sent", Toast.LENGTH_SHORT).show();
+
+                        global.orders.put(global.TableNo,new ArrayList<OrderItems>());
+                        recyclerAdapter1=new OrderAdapter(getActivity());
+                        orderlist.setAdapter(recyclerAdapter1);
+
+
+
+                        logout();
+
+
+                    }else
+                    {
+                        Toast.makeText(getActivity(), "No new order Items in List", Toast.LENGTH_SHORT).show();
+
+                    }
+
+
+
+                } else {
+
+                    if (global.orders.get(global.TableNo).size() > 0) {
+                        orders.setOrderTime(new Date().toString());
+                        orders.setIsSync(false);
+                        orders.setOrderStatus("Kitchen");
+                        orders.setIsContainsvoid(false);
+                        if (global.TableNo.equalsIgnoreCase("0")) {
+                            orders.setOrderType("TAKE AWAY");
+                            orders.setTakeAwayno(global.TakeAwayno);
+                        } else {
+                            orders.setOrderType("DINE IN");
+                            orders.setTable_no(global.TableNo);
+                        }
+
+                        orders.setGst_amount(tax.getText().toString());
+                        orders.setSubTotal(subtotal.getText().toString());
+                        orders.setPayment_status("Un Paid");
+                        orders.setTotal(total.getText().toString());
+                        orders.setIsHold(false);
+
+                        Long id = getHelper().getDaoSession().insertOrReplace(orders);
+                        orders.setId(id);
+
+                        for (int i = 0; i < global.orders.get(global.TableNo).size(); i++) {
                             OrderItems order = new OrderItems();
                             global.orders.get(global.TableNo).get(i).setStatus("Kitchen");
                             order.setProduct_id(global.orders.get(global.TableNo).get(i).getProduct_id());
@@ -275,84 +362,27 @@ hold.setOnClickListener(new View.OnClickListener() {
                             order.setPrice(global.orders.get(global.TableNo).get(i).getPrice());
                             order.setTotal_price_row(global.orders.get(global.TableNo).get(i).getTotal_price_row());
                             order.setStatus(global.orders.get(global.TableNo).get(i).getStatus());
-                            order.setOrderId(global.orderid);
-                            Long id = getHelper().getDaoSession().insert(order);
-                            order.setId(id);
+                            order.setOrderId(id);
+                            Long ids = getHelper().getDaoSession().insert(order);
+                            order.setId(ids);
 
 
                         }
-                    }
+                        global.orderid = null;
+                        global.TableNo = "0";
+
+                        Toast.makeText(getActivity(), "Order Sent", Toast.LENGTH_SHORT).show();
+
+                        global.orders.put(global.TableNo, new ArrayList<OrderItems>());
+                        recyclerAdapter1 = new OrderAdapter(getActivity());
+                        orderlist.setAdapter(recyclerAdapter1);
 
 
-                    Orders orders1=getHelper().getOrderById(global.orderid);
-                    orders1.setGst_amount(tax.getText().toString());
-                    orders1.setSubTotal(subtotal.getText().toString());
-                    orders1.setTotal(total.getText().toString());
-                    getHelper().getDaoSession().update(orders1);
-
-                    global.orderid=null;
-                    global.TableNo="0";
-
-                    Toast.makeText(getActivity(), "Order Sent", Toast.LENGTH_SHORT).show();
-
-                    global.orders.put(global.TableNo,new ArrayList<OrderItems>());
-                    recyclerAdapter1=new OrderAdapter(getActivity());
-                    orderlist.setAdapter(recyclerAdapter1);
-
-
-
-                    logout();
-
-                } else {
-                    orders.setOrderTime(new Date().toString());
-                    orders.setIsSync(false);
-                    orders.setOrderStatus("Kitchen");
-                    orders.setIsContainsvoid(false);
-                    if (global.TableNo.equalsIgnoreCase("0")) {
-                        orders.setOrderType("TAKE AWAY");
-                        orders.setTakeAwayno(global.TakeAwayno);
+                        logout();
                     } else {
-                        orders.setOrderType("DINE IN");
-                        orders.setTable_no(global.TableNo);
-                    }
-
-                    orders.setGst_amount(tax.getText().toString());
-                    orders.setSubTotal(subtotal.getText().toString());
-                    orders.setPayment_status("Un Paid");
-                    orders.setTotal(total.getText().toString());
-                    orders.setIsHold(false);
-
-                    Long id = getHelper().getDaoSession().insertOrReplace(orders);
-                    orders.setId(id);
-
-                    for (int i = 0; i < global.orders.get(global.TableNo).size(); i++) {
-                        OrderItems order = new OrderItems();
-                        global.orders.get(global.TableNo).get(i).setStatus("Kitchen");
-                        order.setProduct_id(global.orders.get(global.TableNo).get(i).getProduct_id());
-                        order.setTitle(global.orders.get(global.TableNo).get(i).getTitle());
-                        order.setImageUrl(global.orders.get(global.TableNo).get(i).getImageUrl());
-                        order.setQuantity(global.orders.get(global.TableNo).get(i).getQuantity());
-                        order.setPrice(global.orders.get(global.TableNo).get(i).getPrice());
-                        order.setTotal_price_row(global.orders.get(global.TableNo).get(i).getTotal_price_row());
-                        order.setStatus(global.orders.get(global.TableNo).get(i).getStatus());
-                        order.setOrderId(id);
-                        Long ids = getHelper().getDaoSession().insert(order);
-                        order.setId(ids);
-
+                        Toast.makeText(getActivity(), "Please add order items", Toast.LENGTH_SHORT).show();
 
                     }
-                    global.orderid=null;
-                    global.TableNo="0";
-
-                    Toast.makeText(getActivity(), "Order Sent", Toast.LENGTH_SHORT).show();
-
-                    global.orders.put(global.TableNo,new ArrayList<OrderItems>());
-                    recyclerAdapter1=new OrderAdapter(getActivity());
-                    orderlist.setAdapter(recyclerAdapter1);
-
-
-
-                    logout();
                 }
 
 
@@ -926,6 +956,8 @@ hold.setOnClickListener(new View.OnClickListener() {
         sendData(WoosimCmd.PM_setStdMode());
     }
 
+
+
     private void sendData(byte[] data) {
 
         try {
@@ -939,7 +971,7 @@ hold.setOnClickListener(new View.OnClickListener() {
 
     }
 
-    void printCheck()
+    public void printCheck()
     {
         Thread t = new Thread() {
             public void run() {
@@ -960,25 +992,25 @@ hold.setOnClickListener(new View.OnClickListener() {
 
                     if(orders1.getTable_no()!=null)
                     {
-                        escposDriver.printLineAlignLeft(outputStream,String.valueOf("   Table.No :"+orders1.getTable_no()));
+                        escposDriver.printLineAlignLeft(outputStream,String.valueOf("       Table.No :"+orders1.getTable_no()));
                         printNewLine();
                     }
 
 
-                    escposDriver.printLineAlignLeft(outputStream,String.valueOf("   ORD_NO-0000"+orders1.getId()));
+                    escposDriver.printLineAlignLeft(outputStream,String.valueOf("       ORD_NO-0000"+orders1.getId()));
                     printNewLine();
 
-                    escposDriver.printLineAlignLeft(outputStream, "   Qty."+" "+"Item                             "+"Price");
-                    escposDriver.printLineAlignRight(outputStream, "  Total   ");
+                    escposDriver.printLineAlignCenter(outputStream, "Qty."+" "+"Item                "+"Price");
+                    escposDriver.printLineAlignRight(outputStream, "Total        ");
                     //printUnicode();
 
 
                     for(int i=0;i<orders1.getOrderItems().size();i++)
                     {
                         OrderItems item=orders1.getOrderItems().get(i);
-                        String msg= "   "+item.getQuantity()+" "+item.getTitle();
+                        String msg= item.getTitle();
                         String eachprice=item.getPrice();
-                        String totalpricerow=item.getTotal_price_row()+"   ";
+                        String totalpricerow=item.getTotal_price_row()+"        ";
                         //printText(leftRightAlign(msg, item.getTotal_price_row()));
                        /* outputStream.write(PrinterCommands.ESC_ALIGN_LEFT);
                         outputStream.write(msg.getBytes());
@@ -989,9 +1021,9 @@ hold.setOnClickListener(new View.OnClickListener() {
                         outputStream.write(totalrow.getBytes());
                         outputStream.write(PrinterCommands.LF);*/
 
-                        if(msg.length()<40)
+                        if(msg.length()<20)
                         {
-                            int addspace=40-msg.length();
+                            int addspace=20-msg.length();
                             String space=" ";
                             for(int k=0;k<addspace;k++)
                             {
@@ -1000,9 +1032,13 @@ hold.setOnClickListener(new View.OnClickListener() {
                             }
                             eachprice=space+eachprice;
                         }
-                        escposDriver.printLineAlignLeft(outputStream, msg);
-                        escposDriver.printLineAlignLeft(outputStream, eachprice);
-                        escposDriver.printLineAlignRight(outputStream, totalpricerow);
+                        if(!item.getQuantity().equalsIgnoreCase("0.0"))
+                        {
+                            escposDriver.printLineAlignCenter(outputStream, item.getQuantity()+" "+msg+eachprice);
+                            //escposDriver.printLineAlignCenter(outputStream, eachprice);
+                            escposDriver.printLineAlignRight(outputStream, totalpricerow);
+
+                        }
 
                     }
 
@@ -1022,9 +1058,15 @@ hold.setOnClickListener(new View.OnClickListener() {
                     printText(leftRightAlign("" , "Total :"+"$"+total.getText().toString()));
                     printText(leftRightAlign("" , "Total :"+"$"+total.getText().toString()));
 */
-                    escposDriver.printLineAlignRight(outputStream, "SubTotal :"+"$"+subtotal.getText().toString()+"     ");
-                    escposDriver.printLineAlignRight(outputStream, "Tax      :"+"$"+tax.getText().toString()+"    ");
-                    escposDriver.printLineAlignRight(outputStream, "Total    :"+"$"+total.getText().toString()+"    ");
+
+
+
+                    escposDriver.printLineAlignRight(outputStream, "SubTotal :"+"$"+subtotal.getText().toString()+"         ");
+                    //printpaidImage();
+                    escposDriver.printLineAlignRight(outputStream, "Tax      :"+"$"+tax.getText().toString()+"        ");
+                    escposDriver.printLineAlignRight(outputStream, "Total    :"+"$"+total.getText().toString()+"        ");
+
+
 
                     printNewLine();
                     printCustom("Thank you for coming & we look",0,1);
@@ -1046,9 +1088,7 @@ hold.setOnClickListener(new View.OnClickListener() {
         t.start();
     }
 
-    public void printDialog() {
 
-    }
 
     public void onActivityResult(int mRequestCode, int mResultCode,
                                  Intent mDataIntent) {
@@ -1098,10 +1138,10 @@ hold.setOnClickListener(new View.OnClickListener() {
 
             if(item.getVoid_quantity()!=null)
             {
-                String msg= "   "+item.getVoid_quantity()+" "+item.getTitle();
+                String msg= item.getTitle();
                 String eachprice=item.getPrice();
                 double updateprice=Double.parseDouble(item.getVoid_quantity())*Double.parseDouble(item.getPrice());
-                String totalpricerow=updateprice+"   ";
+                String totalpricerow=updateprice+"        ";
                 //printText(leftRightAlign(msg, item.getTotal_price_row()));
                        /* outputStream.write(PrinterCommands.ESC_ALIGN_LEFT);
                         outputStream.write(msg.getBytes());
@@ -1112,9 +1152,9 @@ hold.setOnClickListener(new View.OnClickListener() {
                         outputStream.write(totalrow.getBytes());
                         outputStream.write(PrinterCommands.LF);*/
 
-                if(msg.length()<40)
+                if(msg.length()<20)
                 {
-                    int addspace=40-msg.length();
+                    int addspace=20-msg.length();
                     String space=" ";
                     for(int k=0;k<addspace;k++)
                     {
@@ -1123,8 +1163,7 @@ hold.setOnClickListener(new View.OnClickListener() {
                     }
                     eachprice=space+eachprice;
                 }
-                escposDriver.printLineAlignLeft(outputStream, msg);
-                escposDriver.printLineAlignLeft(outputStream, eachprice);
+                escposDriver.printLineAlignCenter(outputStream, item.getVoid_quantity()+" "+msg+eachprice);
                 escposDriver.printLineAlignRight(outputStream, totalpricerow);
 
 
@@ -1132,5 +1171,22 @@ hold.setOnClickListener(new View.OnClickListener() {
 
         }
 
+    }
+
+    public  boolean isBluetoothConnected() {
+
+        return mBluetoothAdapter != null && mBluetoothAdapter.isEnabled()
+                && mBluetoothAdapter.STATE_CONNECTED==2;
+    }
+
+    boolean containsnewItems(List<OrderItems> list) {
+        for (OrderItems item : list) {
+            if (item.getStatus().equalsIgnoreCase("")) {
+
+                return true;
+            }
+        }
+
+        return false;
     }
 }
