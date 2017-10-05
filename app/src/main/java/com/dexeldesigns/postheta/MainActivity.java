@@ -30,6 +30,7 @@ import com.dexeldesigns.postheta.db_tables.model.Break;
 import com.dexeldesigns.postheta.db_tables.model.Clock;
 import com.dexeldesigns.postheta.fragments.*;
 import com.dexeldesigns.postheta.model.Tables;
+import com.dexeldesigns.postheta.reservation.Reservation;
 import com.dexeldesigns.postheta.splitbill.SplitFragment;
 
 
@@ -275,7 +276,7 @@ public class MainActivity extends AppCompatActivity  {
 
                     // initFragments();
 
-                    TableService fragments = new TableService();
+                    Reservation fragments = new Reservation();
 
                     loadFragment(fragments);
 
