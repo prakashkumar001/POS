@@ -20,6 +20,7 @@ import com.dexeldesigns.postheta.db_tables.model.Orders;
 import com.dexeldesigns.postheta.db_tables.model.OrdersDao;
 import com.dexeldesigns.postheta.db_tables.model.Product;
 import com.dexeldesigns.postheta.db_tables.model.ProductDao;
+import com.dexeldesigns.postheta.db_tables.model.Reserve;
 import com.dexeldesigns.postheta.db_tables.model.Staff;
 import com.dexeldesigns.postheta.db_tables.model.StaffDao;
 import com.dexeldesigns.postheta.db_tables.model.SubCategories;
@@ -209,6 +210,13 @@ public class Helper {
     public List<Staff> getStaffList() {
 
         QueryBuilder<Staff> qb = daoSession.queryBuilder(Staff.class);
+        return qb.list();
+
+    }
+
+    public List<Reserve> getReservationList() {
+
+        QueryBuilder<Reserve> qb = daoSession.queryBuilder(Reserve.class);
         return qb.list();
 
     }

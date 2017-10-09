@@ -19,6 +19,24 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    productFlavors{
+
+        freeFlavour{
+            applicationId "com.dexeldesigns.postheta.free"
+            versionName "1.3"
+
+        }
+
+        paidFlavour{
+            applicationId "com.dexeldesigns.postheta.paid"
+            versionName "1.5"
+
+        }
+
+    }
+
+
 }
 
 dependencies {
@@ -33,10 +51,8 @@ dependencies {
     compile 'com.android.support:design:25.3.1'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
     compile 'com.android.support:cardview-v7:25.3.1'
-
     compile 'com.google.code.gson:gson:2.2.2'
     compile 'org.greenrobot:greendao:3.2.0'
-
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'
 }

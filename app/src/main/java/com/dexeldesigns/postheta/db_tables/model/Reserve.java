@@ -15,16 +15,18 @@ public class Reserve {
     private String name;
     private String email;
     private String address;
-    private String date_time;
+    private String date;
+    private String time;
     private String phone;
-    @Generated(hash = 1436363388)
-    public Reserve(Long id, String name, String email, String address,
-            String date_time, String phone) {
+    @Generated(hash = 599317959)
+    public Reserve(Long id, String name, String email, String address, String date,
+            String time, String phone) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.address = address;
-        this.date_time = date_time;
+        this.date = date;
+        this.time = time;
         this.phone = phone;
     }
     @Generated(hash = 1293022648)
@@ -54,11 +56,17 @@ public class Reserve {
     public void setAddress(String address) {
         this.address = address;
     }
-    public String getDate_time() {
-        return this.date_time;
+    public String getDate() {
+        return this.date;
     }
-    public void setDate_time(String date_time) {
-        this.date_time = date_time;
+    public void setDate(String date) {
+        this.date = date;
+    }
+    public String getTime() {
+        return this.time;
+    }
+    public void setTime(String time) {
+        this.time = time;
     }
     public String getPhone() {
         return this.phone;

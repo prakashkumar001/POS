@@ -1,8 +1,11 @@
 package com.dexeldesigns.postheta.reservation;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -16,8 +19,11 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.dexeldesigns.postheta.MainActivity;
 import com.dexeldesigns.postheta.R;
 import com.dexeldesigns.postheta.db_tables.model.Reserve;
+import com.dexeldesigns.postheta.reservation.notification.NotificationScheduler;
+import com.dexeldesigns.postheta.reservation.notification.ReservationNotification;
 
 import java.util.Calendar;
 
@@ -71,22 +77,35 @@ public class Reservation extends Fragment {
             @Override
             public void onClick(View v) {
 
-                if(name.getText().toString().length()>0 && phone.getText().toString().length()>=10 && set_date.getText().toString().length()>0 && set_time.getText().length()>0)
+                if(name.getText().toString().length()>0 && phone.getText().toString().length()>0 && set_date.getText().toString().length()>0 && set_time.getText().length()>0)
                 {
                     Reserve reserve=new Reserve();
                     reserve.setName(name.getText().toString());
                     reserve.setEmail(email.getText().toString());
                     reserve.setAddress(address.getText().toString());
                     reserve.setPhone(phone.getText().toString());
-                    reserve.setDate_time(set_date.getText().toString()+" "+set_time.getText().toString());
+                    reserve.setDate(set_date.getText().toString());
+                    reserve.setTime(set_time.getText().toString());
                     getHelper().getDaoSession().insert(reserve);
+
+                    String[] times=set_time.getText().toString().split(":");
+                    int hour=Integer.parseInt(times[0]);
+                    int minutes=Integer.parseInt(times[1]);
+
+
+                    NotificationScheduler.setReminder(getActivity(), ReservationNotification.class,hour, minutes,name.getText().toString());
+
                 }
 
             }
         });
 
 
+
+
+
         return view;
+
     }
 
     public static class TimePicker extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
@@ -106,7 +125,7 @@ public class Reservation extends Fragment {
             } else {
                 AM_PM = "PM";
             }
-            set_time.setText(String.valueOf(hourOfDay) + " : " + String.valueOf(minute) + " " + AM_PM);
+            set_time.setText(String.valueOf(hourOfDay) + ":" + String.valueOf(minute) /*+ " " + AM_PM*/);
         }
     }
 

@@ -6,6 +6,9 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.BLUETOOTH"></uses-permission>
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"></uses-permission>
+    <!-- permission required to automatically restart a repeating alarm if the user reboots the device -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+
     <supports-screens
         android:anyDensity="true"
         android:largeScreens="true"
@@ -44,6 +47,15 @@
         <activity android:name=".bluetooth.DeviceListActivity"
             android:theme="@style/DialogSlideAnim"
             ></activity>
+
+
+        <!-- Register the Alarm Receiver -->
+        <receiver android:name=".reservation.notification.ReservationNotification"
+            android:enabled="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

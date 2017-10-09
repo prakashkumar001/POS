@@ -1,10 +1,14 @@
 package com.dexeldesigns.postheta;
 
+import android.annotation.TargetApi;
+import android.app.AlarmManager;
 import android.app.Dialog;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -28,9 +32,12 @@ import android.widget.Toast;
 import com.dexeldesigns.postheta.common.GlobalClass;
 import com.dexeldesigns.postheta.db_tables.model.Break;
 import com.dexeldesigns.postheta.db_tables.model.Clock;
+import com.dexeldesigns.postheta.db_tables.model.Reserve;
 import com.dexeldesigns.postheta.fragments.*;
 import com.dexeldesigns.postheta.model.Tables;
 import com.dexeldesigns.postheta.reservation.Reservation;
+import com.dexeldesigns.postheta.reservation.notification.NotificationScheduler;
+import com.dexeldesigns.postheta.reservation.notification.ReservationNotification;
 import com.dexeldesigns.postheta.splitbill.SplitFragment;
 
 
@@ -40,6 +47,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -121,6 +129,10 @@ public class MainActivity extends AppCompatActivity  {
                 loadFragment(fragments);
             }
         });
+
+
+
+
 
     }
 
@@ -654,6 +666,32 @@ public class MainActivity extends AppCompatActivity  {
 
     }
 
+    public String getFormatedTime(int h, int m) {
+        final String OLD_FORMAT = "HH:mm";
+        final String NEW_FORMAT = "hh:mm a";
 
+        String oldDateString = h + ":" + m;
+        String newDateString = "";
 
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat(OLD_FORMAT, getCurrentLocale());
+            Date d = sdf.parse(oldDateString);
+            sdf.applyPattern(NEW_FORMAT);
+            newDateString = sdf.format(d);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return newDateString;
+    }
+
+    @TargetApi(Build.VERSION_CODES.N)
+    public Locale getCurrentLocale() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            return getResources().getConfiguration().getLocales().get(0);
+        } else {
+            //noinspection deprecation
+            return getResources().getConfiguration().locale;
+        }
+    }
 }
