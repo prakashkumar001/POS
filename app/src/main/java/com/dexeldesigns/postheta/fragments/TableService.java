@@ -158,7 +158,7 @@ public class TableService extends Fragment {
             protected String doInBackground(String[] params) {
 
                 String response = null;
-                response = new WSUtils().getResultFromHttpRequest("http://192.168.1.16/pos/get_table_structure.php","GET",new HashMap<String,String>());
+                response = new WSUtils().getResultFromHttpRequest(GlobalClass.BASE_URL+"get_table_structure.php","GET",new HashMap<String,String>());
                 Log.i("JSON","JSON"+response);
                 data=new ArrayList<>();
 
@@ -875,7 +875,7 @@ public class TableService extends Fragment {
 
                  String response = null;
                  try {
-                     response = new WSUtils().responsedetailsfromserver("http://192.168.1.16/pos/post_table_structure.php",data);
+                     response = new WSUtils().responsedetailsfromserver(GlobalClass.BASE_URL+"post_table_structure.php",data);
                  } catch (IOException e) {
                      e.printStackTrace();
                  }

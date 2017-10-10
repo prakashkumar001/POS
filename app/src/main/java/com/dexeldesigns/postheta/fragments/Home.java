@@ -41,6 +41,7 @@ import android.widget.Toast;
 import com.dexeldesigns.postheta.Login;
 import com.dexeldesigns.postheta.R;
 import com.dexeldesigns.postheta.Utils.OrderTotal;
+import com.dexeldesigns.postheta.Utils.TableBuilder;
 import com.dexeldesigns.postheta.adapters.MenuListAdapter;
 import com.dexeldesigns.postheta.adapters.OrderAdapter;
 import com.dexeldesigns.postheta.adapters.OrderDetailsAdapter;
@@ -78,6 +79,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+
+import dnl.utils.text.table.TextTable;
 
 import static com.dexeldesigns.postheta.common.GlobalClass.bluetoothStatus;
 import static com.dexeldesigns.postheta.helper.Helper.getHelper;
@@ -1000,26 +1003,30 @@ hold.setOnClickListener(new View.OnClickListener() {
                     escposDriver.printLineAlignLeft(outputStream,String.valueOf("       ORD_NO-0000"+orders1.getId()));
                     printNewLine();
 
-                    escposDriver.printLineAlignCenter(outputStream, "Qty."+" "+"Item                "+"Price");
+                  /*  escposDriver.printLineAlignCenter(outputStream, "Qty."+" "+"Item                "+"Price");
                     escposDriver.printLineAlignRight(outputStream, "Total        ");
-                    //printUnicode();
+                  */  //printUnicode();
 
-
+                    TableBuilder tb = new TableBuilder();
+                    tb.addRow("Qty.","Item","Price","Total");
+                    tb.addRow("-----", "----", "-----","-----");
                     for(int i=0;i<orders1.getOrderItems().size();i++)
                     {
+
+
+
+
                         OrderItems item=orders1.getOrderItems().get(i);
-                        String msg= item.getTitle();
+
+                        tb.addRow(item.getQuantity(), item.getTitle(), item.getPrice(),item.total_price_row);
+
+
+                        System.out.println(tb.toString());
+
+                      /*  String msg= item.getTitle();
                         String eachprice=item.getPrice();
                         String totalpricerow=item.getTotal_price_row()+"        ";
-                        //printText(leftRightAlign(msg, item.getTotal_price_row()));
-                       /* outputStream.write(PrinterCommands.ESC_ALIGN_LEFT);
-                        outputStream.write(msg.getBytes());
-                        outputStream.write(PrinterCommands.ESC_ALIGN_CENTER);
-                        outputStream.write(item.getPrice().getBytes());
-                        outputStream.write(PrinterCommands.ESC_ALIGN_RIGHT);
-                        String totalrow=item.getTotal_price_row()+"   ";
-                        outputStream.write(totalrow.getBytes());
-                        outputStream.write(PrinterCommands.LF);*/
+
 
                         if(msg.length()<20)
                         {
@@ -1039,8 +1046,11 @@ hold.setOnClickListener(new View.OnClickListener() {
                             escposDriver.printLineAlignRight(outputStream, totalpricerow);
 
                         }
-
+*/
                     }
+
+                    escposDriver.printLineAlignCenter(outputStream,tb.toString());
+
 
 
                     if(orders1.getIsContainsvoid())
@@ -1138,6 +1148,7 @@ hold.setOnClickListener(new View.OnClickListener() {
 
             if(item.getVoid_quantity()!=null)
             {
+
                 String msg= item.getTitle();
                 String eachprice=item.getPrice();
                 double updateprice=Double.parseDouble(item.getVoid_quantity())*Double.parseDouble(item.getPrice());

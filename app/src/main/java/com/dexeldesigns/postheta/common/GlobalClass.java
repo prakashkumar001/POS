@@ -3,6 +3,7 @@ package com.dexeldesigns.postheta.common;
 import android.app.Application;
 import android.content.Context;
 
+import com.dexeldesigns.postheta.BuildConfig;
 import com.dexeldesigns.postheta.db_tables.model.DaoMaster;
 import com.dexeldesigns.postheta.db_tables.model.DaoSession;
 import com.dexeldesigns.postheta.db_tables.model.OrderItems;
@@ -28,6 +29,17 @@ import java.util.TreeMap;
  */
 
 public class GlobalClass extends Application {
+    public static String BASE_URL = "";
+
+    static{
+        if (BuildConfig.BUILD_VARIANT.equals("prod")) {
+            BASE_URL = "http://likely-distress.000webhostapp.com/pos/";
+        } else {
+            BASE_URL = "http://192.168.1.16/pos/";
+        }
+    }
+
+
     private static GlobalClass mInstance;
     public static Map<String,List<OrderItems>> orders=new TreeMap<>();
     public static ArrayList<Tables> select_tables=new ArrayList<Tables>();

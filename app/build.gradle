@@ -23,29 +23,39 @@ android {
     productFlavors{
 
         freeFlavour{
-            applicationId "com.dexeldesigns.postheta.free"
+            buildConfigField "String", "BUILD_VARIANT", "\"prod\""
+
+            applicationId "com.dexeldesigns.postheta.debug"
             versionName "1.3"
 
         }
 
         paidFlavour{
-            applicationId "com.dexeldesigns.postheta.paid"
+            buildConfigField "String", "BUILD_VARIANT", "\"dev\""
+
+            applicationId "com.dexeldesigns.postheta.prod"
             versionName "1.5"
 
         }
 
     }
 
+    applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            def file = output.outputFile
+            def filename = file.name.replace("app", "POSTheta")
+            output.outputFile = new File(file.parent, filename)
 
+        }
+    }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile project(':navigationtabbar')
-
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support:recyclerview-v7:25.3.1'
     compile 'com.android.support:design:25.3.1'
@@ -55,4 +65,6 @@ dependencies {
     compile 'org.greenrobot:greendao:3.2.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'
+    compile files('libs/j-text-utils-0.3.3.jar')
+    compile files('libs/common-lang3.jar')
 }

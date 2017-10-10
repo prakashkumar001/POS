@@ -275,30 +275,43 @@ public class Login extends AppCompatActivity {
 
                 }
 
+
                     if (getHelper().getClockData(Long.parseLong(userId)).size() > 0) {
                         if (getHelper().getClockData(Long.parseLong(userId)).get(0).getClock_out_time() == null) {
 
                             Clock clock = getHelper().getClockData(Long.parseLong(userId)).get(0);
 
+                            SimpleDateFormat dd = new SimpleDateFormat("yyyy-MM-dd");
+                            Calendar calendar = Calendar.getInstance();
+                            String currentdate = dd.format(calendar.getTime());
+                            String[] clockdates=clock.getClock_in_time().split(" ");
+                            if(clockdates[0].equalsIgnoreCase(currentdate))
+                            {
+                                if (getHelper().getBreakData(clock.getId()).size() == 0) {
 
-                            if (getHelper().getBreakData(clock.getId()).size() == 0) {
-
-                                clockin.setText("Break");
-
-                                Intent i = new Intent(Login.this, MainActivity.class);
-                                startActivity(i);
-                                finish();
-
-                            } else if (getHelper().getBreakData(clock.getId()).size() > 0) {
-                                if (getHelper().getBreakData(clock.getId()).get(0).getBreak_end_time() == null) {
-                                    clockin.setText("Resume");
-                                } else {
                                     clockin.setText("Break");
+
                                     Intent i = new Intent(Login.this, MainActivity.class);
                                     startActivity(i);
                                     finish();
+
+                                } else if (getHelper().getBreakData(clock.getId()).size() > 0) {
+                                    if (getHelper().getBreakData(clock.getId()).get(0).getBreak_end_time() == null) {
+                                        clockin.setText("Resume");
+                                    } else {
+                                        clockin.setText("Break");
+                                        Intent i = new Intent(Login.this, MainActivity.class);
+                                        startActivity(i);
+                                        finish();
+                                    }
                                 }
+                            }else
+                            {
+                                clockin.setText("Clock in");
                             }
+
+
+
                         }
                     } else {
                         clockin.setText("Clock in");
